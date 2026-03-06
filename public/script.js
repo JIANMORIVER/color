@@ -672,11 +672,13 @@ function renderStep() {
     }
 
     if (currentStep > 0) {
-        document.body.style.zoom = "0.96";
-        document.body.style.transform = "none";
+        document.body.style.zoom = ""; // 弃用问题多多的非标准属性
+        document.body.style.transform = "scale(0.96)";
+        document.body.style.transformOrigin = "top center";
     } else {
-        document.body.style.zoom = "1";
+        document.body.style.zoom = "";
         document.body.style.transform = "none";
+        document.body.style.transformOrigin = "top center";
     }
 
     updateProgress();
@@ -1518,11 +1520,16 @@ function renderColorPicker(emotionKey, t) {
             clientY = e.clientY;
         }
 
-        // 核心修复：由于 body 设置了 zoom: 0.96，getBoundingClientRect 返回的是物理像素坐标
-        // 我们需要除以缩放系数 0.96 才能得到相对于 canvas 元素的正确 CSS 坐标
-        const zoom = 0.96;
-        const x = (clientX - rect.left) / zoom;
-        const y = (clientY - rect.top) / zoom;
+        // 终极兼容性跨浏览器坐标计算法：抛弃对绝对像素的依赖
+        // rect.width / rect.height 是经过屏幕变换（Scale 缩放等）后的实际物理框。
+        // 而 clientX/clientY 也是在屏幕坐标系中。
+        // 通过直接相减除以它的实际大小，得出鼠标在画布上的精确百分比（0.0 ~ 1.0）
+        const ratioX = (clientX - rect.left) / (rect.width || 1);
+        const ratioY = (clientY - rect.top) / (rect.height || 1);
+
+        // 再乘回原始 DOM 逻辑坐标（因为 cursor 的 left 和 top 是相对于容器逻辑 offsetWidth 而言的）
+        const x = ratioX * (canvas.offsetWidth || 1);
+        const y = ratioY * (canvas.offsetHeight || 1);
 
         updateHSLFromPosition(x, y);
     };
