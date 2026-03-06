@@ -1667,6 +1667,8 @@ function renderGEWChart(t) {
 
     // Create UI Structure
     container.innerHTML = ''; // Clear
+    container.style.width = `${size}px`;
+    container.style.height = `${size}px`;
 
     // SVG Layer
     // ...
