@@ -1400,9 +1400,8 @@ function renderColorPicker(emotionKey, t) {
         lastX = x;
         lastY = y;
 
-        const rect = canvas.getBoundingClientRect();
-        const width = canvas.width || 1;
-        const height = canvas.height || 1;
+        const width = canvas.offsetWidth || 1;
+        const height = canvas.offsetHeight || 1;
 
         const safeX = Math.max(0, Math.min(x, width));
         const safeY = Math.max(0, Math.min(y, height));
@@ -1506,22 +1505,21 @@ function renderColorPicker(emotionKey, t) {
 
     const handleMove = (e) => {
         if (!isDragging) return;
-        // Prevent scrolling ONLY when dragging
         if (e.cancelable) e.preventDefault();
 
         const rect = canvas.getBoundingClientRect();
-        let clientX = e.clientX;
-        let clientY = e.clientY;
+        let clientX, clientY;
 
         if (e.touches && e.touches.length > 0) {
             clientX = e.touches[0].clientX;
             clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
         }
 
-        const ratioX = (clientX - rect.left) / (rect.width || 1);
-        const ratioY = (clientY - rect.top) / (rect.height || 1);
-        const x = ratioX * canvas.width;
-        const y = ratioY * canvas.height;
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
 
         updateHSLFromPosition(x, y);
     };
@@ -1541,6 +1539,12 @@ function renderColorPicker(emotionKey, t) {
     window.addEventListener('touchend', handleEnd);
 
     nextBtn.addEventListener('click', () => {
+        // 重要：切换题目时彻底移除 window 级别的监听器，防止内存泄漏和坐标干扰
+        window.removeEventListener('mousemove', handleMove);
+        window.removeEventListener('mouseup', handleEnd);
+        window.removeEventListener('touchmove', handleMove);
+        window.removeEventListener('touchend', handleEnd);
+
         colorData[emotionKey] = {
             ...currentHSL,
             hex: hslToHex(currentHSL.h, currentHSL.s, currentHSL.l)
