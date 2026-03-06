@@ -1518,8 +1518,11 @@ function renderColorPicker(emotionKey, t) {
             clientY = e.clientY;
         }
 
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
+        // 核心修复：由于 body 设置了 zoom: 0.96，getBoundingClientRect 返回的是物理像素坐标
+        // 我们需要除以缩放系数 0.96 才能得到相对于 canvas 元素的正确 CSS 坐标
+        const zoom = 0.96;
+        const x = (clientX - rect.left) / zoom;
+        const y = (clientY - rect.top) / zoom;
 
         updateHSLFromPosition(x, y);
     };
