@@ -1663,7 +1663,7 @@ function renderGEWChart(t) {
     const center = size / 2;
     // Layout Config
     const innerRadius = 70; // Larger for center buttons
-    const outerRadius = size / 2 - 110; // 留出巨大空间给两圈很长的双语文字
+    const outerRadius = size / 2 - 130; // 进一步缩小，给继续加大的字体留足空间
 
     // Create UI Structure
     container.innerHTML = ''; // Clear
@@ -1719,8 +1719,8 @@ function renderGEWChart(t) {
         }
 
         // Labels
-        // 增加 labelDist 的偏移量，防大字体和最外圈的圆圈重叠
-        const labelDist = outerRadius + 50;
+        // 增加 labelDist 的偏移量，防大大字体和最外圈的圆圈重叠
+        const labelDist = outerRadius + 65;
         const lx = center + labelDist * Math.cos(radian);
         const ly = center + labelDist * Math.sin(radian);
 
@@ -1728,8 +1728,8 @@ function renderGEWChart(t) {
         text.setAttribute("x", lx);
         text.setAttribute("y", ly);
         text.setAttribute("text-anchor", "middle");
-        // 再次调大字体并加粗
-        text.setAttribute("font-size", "16");
+        // 最极限再次调大字体并加粗
+        text.setAttribute("font-size", "18");
         text.setAttribute("font-weight", "900");
 
         if (currentGroup === 'CN') {
@@ -1917,8 +1917,8 @@ async function submitPhase1(t) {
         renderStep();
     } catch (e) {
         console.error(e);
-        alert(t.errorSubmit + ': ' + (e.message || t.errorNetwork));
-        location.reload();
+        showToast(t.errorSubmit + ': ' + (e.message || t.errorNetwork));
+        setTimeout(() => location.reload(), 2500);
     }
 }
 
@@ -1949,7 +1949,7 @@ async function submitPhase2(t) {
         console.error(e);
         // Even if update fails, we have Phase 1. Just show Thank You or Error.
         // Showing Thank You is better UX, maybe log error.
-        alert(t.errorSubmit + ' (Phase 2): ' + (e.message || t.errorNetwork));
+        showToast(t.errorSubmit + ' (Phase 2): ' + (e.message || t.errorNetwork));
         // Force thank you access
         currentStep = 999;
         renderThankYou(t);
@@ -1972,7 +1972,7 @@ function renderThankYou(t) {
         <div class="card" style="text-align: center;">
             <h2>${t.thankYou}</h2>
             <p>${t.thankYouDesc}</p>
-            <button onclick="location.reload()" class="btn secondary-btn" style="margin-top: 1rem;">${t.home}</button>
+            <p style="margin-top: 2.5rem; color: #718096; font-size: 0.95rem;">${currentLang === 'en' ? 'Press ESC to exit full screen.' : '按 ESC 退出全屏'}</p>
         </div>
     `;
 }
