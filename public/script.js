@@ -65,6 +65,8 @@ const i18n = {
         errorConsent: '请勾选同意选项',
         errorSubmit: '提交失败，请重试',
         errorNetwork: '网络错误',
+        fullScreenEnter: '全屏显示',
+        fullScreenExit: '退出全屏',
 
         // Phase 1 Tutorial
         phase1TutorialTitle: '第一阶段操作教程',
@@ -180,6 +182,8 @@ const i18n = {
         errorConsent: 'Please verify consent',
         errorSubmit: 'Submission failed',
         errorNetwork: 'Network error',
+        fullScreenEnter: 'Fullscreen',
+        fullScreenExit: 'Exit Fullscreen',
 
         // Phase 1 Tutorial
         phase1TutorialTitle: 'Phase 1: Operation Tutorial',
@@ -610,6 +614,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateStaticText(); // Sync title on load
     renderStep();
+
+    // 全屏状态改变监听（处理 ESC 退出全屏的情况）
+    document.addEventListener('fullscreenchange', () => {
+        updateStaticText();
+    });
 });
 
 function toggleLanguage(e) {
@@ -639,9 +648,18 @@ function updateStaticText() {
         }
     }
     document.title = t.title;
+
+    // Update Fullscreen Button Text
+    const fsText = document.getElementById('fullscreenBtnText');
+    if (fsText) {
+        fsText.textContent = document.fullscreenElement ? t.fullScreenExit : t.fullScreenEnter;
+    }
 }
 
 function renderStep() {
+    // 强制每次切换界面都回到顶部
+    window.scrollTo(0, 0);
+
     // Reset interaction
     if (currentStep > 0 && currentStep <= EMOTION_KEYS.length) {
         hasHueInteracted = false;
