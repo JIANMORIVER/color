@@ -1606,6 +1606,7 @@ function renderGEWIntro(t) {
                 <!-- SVG Wrapper -->
             </div>
 
+            <div id="tutorialErrorMsg" style="color: #c53030; font-weight: bold; margin-bottom: 1rem; display: none;"></div>
             <button class="btn primary-btn" onclick="startPhase2()">${t.gewStart}</button>
         </div>
     `;
@@ -1626,7 +1627,24 @@ window.startPhase2 = () => {
         currentStep++;
         renderStep();
     } else {
-        showToast(i18n[currentLang].phase2TutorialError);
+        const errorMsg = document.getElementById('tutorialErrorMsg');
+        if (errorMsg) {
+            errorMsg.textContent = i18n[currentLang].phase2TutorialError;
+            errorMsg.style.display = 'block';
+
+            // 加入一个简单的震动动画提醒用户
+            errorMsg.animate([
+                { transform: 'translateX(0px)' },
+                { transform: 'translateX(-5px)' },
+                { transform: 'translateX(5px)' },
+                { transform: 'translateX(-5px)' },
+                { transform: 'translateX(5px)' },
+                { transform: 'translateX(0px)' }
+            ], { duration: 400, iterations: 1 });
+        } else {
+            // 后备措施
+            showToast(i18n[currentLang].phase2TutorialError);
+        }
     }
 };
 
