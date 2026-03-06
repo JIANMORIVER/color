@@ -590,6 +590,24 @@ function showToast(message) {
 document.addEventListener('DOMContentLoaded', () => {
     if (document.body.classList.contains('admin-body')) return;
     langBtn.addEventListener('click', toggleLanguage);
+
+    // Fullscreen Logic
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    if (fullscreenBtn) {
+        fullscreenBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    showToast(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        });
+    }
+
     updateStaticText(); // Sync title on load
     renderStep();
 });
@@ -1794,6 +1812,99 @@ function renderGEWChart(t) {
 
     // Button 2: Different Emotion
     const btnOther = document.createElement('button');
+    btnOther.id = 'gew-other-btn'; // Add ID for easier selection
+    btnOther.textContent = t.differentEmotion;
+    btnOther.style.fontSize = '12px';
+    btnOther.style.padding = '4px 8px';
+    btnOther.style.cursor = 'pointer';
+    btnOther.style.background = '#f0f0f0';
+    btnOther.style.border = '1px solid #999';
+    btnOther.style.borderRadius = '4px';
+
+    // New In-page Input Logic
+    btnOther.onclick = () => {
+        // Toggle input mode
+        renderGEWOtherInput(svg, centerDiv, t);
+    };
+
+    centerDiv.appendChild(btnNo);
+    centerDiv.appendChild(btnOther);
+    container.appendChild(centerDiv);
+
+    // Initial Visual Update
+    updateGEWVisuals(svg, centerDiv);
+}
+
+// Sub-function to render the input UI inside the center
+function renderGEWOtherInput(svg, centerDiv, t) {
+    centerDiv.innerHTML = ''; // Clear current buttons
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = t.enterEmotion;
+    input.style.width = '90%';
+    input.style.padding = '4px';
+    input.style.fontSize = '12px';
+    input.style.marginBottom = '5px';
+    input.id = 'gew-custom-input';
+
+    const btnContainer = document.createElement('div');
+    btnContainer.style.display = 'flex';
+    btnContainer.style.gap = '5px';
+
+    const confirmBtn = document.createElement('button');
+    confirmBtn.textContent = 'OK';
+    confirmBtn.style.padding = '4px 8px';
+    confirmBtn.style.fontSize = '11px';
+    confirmBtn.onclick = () => {
+        const val = input.value.trim();
+        if (val) {
+            currentGEWSelection = {};
+            currentGEWSelection['OTHER'] = val;
+            // Redraw original UI
+            renderGEWChartButtons(svg, centerDiv, t);
+        } else {
+            // Cancel if empty? Or just show original?
+            renderGEWChartButtons(svg, centerDiv, t);
+        }
+    };
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'X';
+    cancelBtn.style.padding = '4px 8px';
+    cancelBtn.style.fontSize = '11px';
+    cancelBtn.onclick = () => {
+        renderGEWChartButtons(svg, centerDiv, t);
+    };
+
+    btnContainer.appendChild(confirmBtn);
+    btnContainer.appendChild(cancelBtn);
+
+    centerDiv.appendChild(input);
+    centerDiv.appendChild(btnContainer);
+
+    input.focus();
+}
+
+// Helper to restore center buttons
+function renderGEWChartButtons(svg, centerDiv, t) {
+    centerDiv.innerHTML = '';
+
+    const btnNo = document.createElement('button');
+    btnNo.textContent = t.noEmotion;
+    btnNo.style.fontSize = '12px';
+    btnNo.style.padding = '4px 8px';
+    btnNo.style.cursor = 'pointer';
+    btnNo.style.background = '#f0f0f0';
+    btnNo.style.border = '1px solid #999';
+    btnNo.style.borderRadius = '4px';
+    btnNo.onclick = () => {
+        currentGEWSelection = { 'NO_EMOTION': 0 };
+        updateGEWVisuals(svg, centerDiv);
+    };
+
+    const btnOther = document.createElement('button');
+    btnOther.id = 'gew-other-btn';
     btnOther.textContent = t.differentEmotion;
     btnOther.style.fontSize = '12px';
     btnOther.style.padding = '4px 8px';
@@ -1802,21 +1913,11 @@ function renderGEWChart(t) {
     btnOther.style.border = '1px solid #999';
     btnOther.style.borderRadius = '4px';
     btnOther.onclick = () => {
-        const input = prompt(t.enterEmotion);
-        if (input && input.trim()) {
-            currentGEWSelection = {}; // Clear others? Usually implied strict choice if manually entering.
-            // Or maybe add as a special key. 
-            // Let's replace selection with special entry.
-            currentGEWSelection['OTHER'] = input.trim();
-            updateGEWVisuals(svg, centerDiv);
-        }
+        renderGEWOtherInput(svg, centerDiv, t);
     };
 
     centerDiv.appendChild(btnNo);
     centerDiv.appendChild(btnOther);
-    container.appendChild(centerDiv);
-
-    // Initial Visual Update
     updateGEWVisuals(svg, centerDiv);
 }
 
