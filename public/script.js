@@ -551,6 +551,41 @@ let currentHSL = { h: 180, s: 50, l: 50 };
 let colorPickerObjectId = null; // Stores ID from Phase 1 for update
 let wordData = {};
 
+// Custom Toast notification 
+function showToast(message) {
+    let toast = document.getElementById('custom-toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'custom-toast';
+        toast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f56565;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            z-index: 10000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.style.opacity = '1';
+
+    // Auto hide
+    if (toast.hideTimeout) clearTimeout(toast.hideTimeout);
+    toast.hideTimeout = setTimeout(() => {
+        toast.style.opacity = '0';
+    }, 3000);
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     if (document.body.classList.contains('admin-body')) return;
@@ -712,7 +747,7 @@ function renderConsent(t) {
             currentStep++;
             renderStep();
         } else {
-            alert(t.errorConsent);
+            showToast(t.errorConsent);
         }
     });
 }
@@ -945,7 +980,7 @@ function renderUserInfoForm(t) {
 
         const birthYear = document.getElementById('birthYear').value;
         if (birthYear < 1900 || birthYear > new Date().getFullYear()) {
-            alert(t.errorAge);
+            showToast(t.errorAge);
             return;
         }
 
@@ -1541,7 +1576,7 @@ window.startPhase2 = () => {
         currentStep++;
         renderStep();
     } else {
-        alert(i18n[currentLang].phase2TutorialError);
+        showToast(i18n[currentLang].phase2TutorialError);
     }
 };
 
@@ -1591,7 +1626,7 @@ function renderGEWTrial(word, t) {
     document.getElementById('gewNextBtn').addEventListener('click', () => {
         // Validation: Must select at least one emotion
         if (Object.keys(currentGEWSelection).length === 0) {
-            alert(t.errorRequired || 'Please make a selection');
+            showToast(t.errorRequired || 'Please make a selection');
             return;
         }
 
@@ -1623,12 +1658,12 @@ function renderGEWTrial(word, t) {
 // Draw the Geneva Emotion Wheel with SVG
 function renderGEWChart(t) {
     const container = document.getElementById('gew-container');
-    const size = Math.min(window.innerWidth - 40, 600);
+    // 增大整体 SVG 的画幅大小，确保边缘的字不会被截断
+    const size = Math.min(window.innerWidth - 20, 750);
     const center = size / 2;
     // Layout Config
-    // Layout Config
     const innerRadius = 70; // Larger for center buttons
-    const outerRadius = size / 2 - 75; // 进一步缩小外圈半径防截断长词
+    const outerRadius = size / 2 - 110; // 留出巨大空间给两圈很长的双语文字
 
     // Create UI Structure
     container.innerHTML = ''; // Clear
