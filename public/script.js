@@ -1211,7 +1211,7 @@ function renderColorPicker(emotionKey, t) {
                 <div id="colorPreview" class="color-preview-box" style="width: 80px; height: 80px; background-color: hsl(${currentHSL.h}, ${currentHSL.s}%, ${currentHSL.l}%);"></div>
             </div>
 
-            <p style="text-align: center; margin-bottom: 1.5rem; color: #64748b; font-size: 1.15rem;">${t.emotionInstruction(emotionDisplay)}</p>
+            <p style="text-align: center; margin-bottom: 2rem; color: #64748b; font-size: 1.3rem; font-weight: 500;">${t.emotionInstruction(emotionDisplay)}</p>
             
             <div class="color-picker-wrapper">
                 <div class="hue-slider-container" style="width: 100%">
@@ -1628,24 +1628,22 @@ function renderGEWChart(t) {
     // Layout Config
     // Layout Config
     const innerRadius = 70; // Larger for center buttons
-    const outerRadius = size / 2 - 55; // Reduced from 40 to 55 to give more space for text
+    const outerRadius = size / 2 - 75; // 进一步缩小外圈半径防截断长词
 
     // Create UI Structure
     container.innerHTML = ''; // Clear
 
     // SVG Layer
+    // ...
     const svgNS = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(svgNS, "svg");
     svg.setAttribute("width", size);
     svg.setAttribute("height", size);
     svg.style.userSelect = 'none';
+    // 增加 overflow: visible 以防止极少数情况下边缘文字被框截断
+    svg.style.overflow = 'visible';
 
     // 20 Emotions Distributed Evenly
-    // Interest (#0) is Top-Right First. 
-    // 12 o'clock is -90 degrees.
-    // We want the gap to be at 12 o'clock.
-    // 360 / 20 = 18 degrees per sector.
-    // Sector 0 center should be at -90 + 9 = -81 degrees.
     const angleStep = 360 / GEW_EMOTION_KEYS.length;
 
     GEW_EMOTION_KEYS.forEach((key, index) => {
@@ -1655,14 +1653,11 @@ function renderGEWChart(t) {
 
         // Draw 5 circles
         for (let i = 1; i <= 5; i++) {
-            // Distance distribution
-            // Linear from inner + spacing to outer
             const stepSize = (outerRadius - innerRadius) / 5;
-            const dist = innerRadius + (i - 0.5) * stepSize; // Center of circle
+            const dist = innerRadius + (i - 0.5) * stepSize;
 
             const cx = center + dist * Math.cos(radian);
             const cy = center + dist * Math.sin(radian);
-            // Sizes: 4, 6, 8, 10, 12 roughly
             const circleRadius = 3 + i * 1.8;
 
             const circle = document.createElementNS(svgNS, "circle");
@@ -1676,7 +1671,6 @@ function renderGEWChart(t) {
             circle.dataset.emotion = key;
             circle.dataset.intensity = i;
 
-            // Touch/Click
             const handler = (e) => {
                 e.preventDefault();
                 toggleGEWSelection(key, i, svg);
@@ -1688,8 +1682,8 @@ function renderGEWChart(t) {
         }
 
         // Labels
-        // 增加 labelDist 的偏移量，防止大字体和最外圈的圆圈重叠
-        const labelDist = outerRadius + 40;
+        // 增加 labelDist 的偏移量，防大字体和最外圈的圆圈重叠
+        const labelDist = outerRadius + 50;
         const lx = center + labelDist * Math.cos(radian);
         const ly = center + labelDist * Math.sin(radian);
 
@@ -1697,9 +1691,9 @@ function renderGEWChart(t) {
         text.setAttribute("x", lx);
         text.setAttribute("y", ly);
         text.setAttribute("text-anchor", "middle");
-        // 调大字体并加粗
-        text.setAttribute("font-size", "14");
-        text.setAttribute("font-weight", "bold");
+        // 再次调大字体并加粗
+        text.setAttribute("font-size", "16");
+        text.setAttribute("font-weight", "900");
 
         if (currentGroup === 'CN') {
             const en = i18n.en.gewEmotions[key];
