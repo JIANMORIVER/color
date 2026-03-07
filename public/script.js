@@ -906,7 +906,7 @@ function renderUserInfoForm(t) {
                         <label for="birthMonth">${t.birthMonth}</label>
                         <select id="birthMonth" required>
                             <option value="">${t.select}</option>
-                            ${Array.from({ length: 12 }, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
+                            ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map((m, i) => `<option value="${i + 1}">${m}</option>`).join('')}
                         </select>
                     </div>
                 </div>
