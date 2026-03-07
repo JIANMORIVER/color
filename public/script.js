@@ -546,7 +546,6 @@ const LANGUAGES = [
 
 const progressText = document.getElementById('progressText');
 const mainContent = document.getElementById('mainContent');
-const langBtn = document.getElementById('langBtn');
 const appTitle = document.getElementById('appTitle');
 
 let currentHSL = { h: 180, s: 50, l: 50 };
@@ -593,7 +592,6 @@ function showToast(message) {
 
 document.addEventListener('DOMContentLoaded', () => {
     if (document.body.classList.contains('admin-body')) return;
-    langBtn.addEventListener('click', toggleLanguage);
 
     // Fullscreen Logic
     const fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -620,21 +618,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateStaticText();
     });
 });
-
-function toggleLanguage(e) {
-    if (e) e.preventDefault();
-    currentLang = currentLang === 'zh' ? 'en' : 'zh';
-
-    // Update footer text: Show both, bold the active one
-    if (currentLang === 'zh') {
-        langBtn.innerHTML = '<b>中文</b> | English';
-    } else {
-        langBtn.innerHTML = '中文 | <b>English</b>';
-    }
-
-    updateStaticText();
-    renderStep();
-}
 
 function updateStaticText() {
     const t = i18n[currentLang];
@@ -747,13 +730,9 @@ function renderGroupSelection(t) {
 
 window.selectGroup = (group) => {
     currentGroup = group;
-    if (group === 'CN') {
-        currentLang = 'zh';
-        langBtn.innerHTML = '<b>中文</b> | English';
-    } else {
-        currentLang = 'en';
-        langBtn.innerHTML = '中文 | <b>English</b>';
-    }
+    // 将全部组别的默认语言统一设为英文
+    currentLang = 'en';
+
     updateStaticText();
     currentStep++;
     renderStep();
