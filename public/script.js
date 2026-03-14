@@ -1555,40 +1555,87 @@ function renderGEWIntro(t) {
     // 强制初始化错误状态用于互动演练
     currentGEWSelection = { 'joy': 5 };
 
-    mainContent.innerHTML = `
-        <div class="card" style="text-align: center; max-width: 800px; margin: 0 auto;">
-            <h2>${t.phase2Title}</h2>
-            <p style="margin: 20px 0; line-height: 1.6; font-size: 1.1rem; color: #333;">${t.phase2Desc}</p>
-            
-            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 2rem; text-align: left;">
-                <p style="margin-bottom: 15px; font-weight: bold;">${t.phase2Note}</p>
-                
-                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin: 20px 0;">
-                    <div style="text-align: right; color: #666; font-size: 0.9rem;">${currentLang === 'en' ? 'Low Intensity' : '情绪弱'}</div>
-                    <!-- 模拟一排不同大小的圆圈 -->
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <div style="width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid black; background: white;"></div>
-                        <div style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid black; background: white;"></div>
-                        <div style="width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid black; background: white;"></div>
-                        <div style="width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid black; background: white;"></div>
-                        <div style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid black; background: black;"></div>
+    const isMobileUI = window.innerWidth < 600;
+
+    if (isMobileUI) {
+        mainContent.innerHTML = `
+            <div style="display: flex; flex-direction: row; align-items: stretch; justify-content: space-between; width: 100vw; margin-left: calc(-50vw + 50%); padding: 0; box-sizing: border-box; background: var(--bg-color); height: 100vh; overflow: hidden;">
+                <!-- 左列: 滚动教程文字区域 -->
+                <div style="flex: 1; min-width: 140px; max-width: 200px; overflow-y: auto; padding: 10px; font-size: 11px; border-right: 1px solid #eee; background: #fff;">
+                    <h2 style="font-size: 14px; margin-bottom: 8px;">${t.phase2Title}</h2>
+                    <p style="margin: 5px 0; line-height: 1.4; color: #333;">${t.phase2Desc}</p>
+                    
+                    <div style="background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 10px;">
+                        <p style="margin-bottom: 5px; font-weight: bold; font-size: 10px;">${t.phase2Note}</p>
+                        
+                        <!-- 简化的强弱图示 -->
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 8px 0; font-size: 9px; color: #666;">
+                            <span>${currentLang === 'en' ? 'Low Intensity' : '情绪弱'}</span>
+                            <div style="display: flex; gap: 4px; align-items: center;">
+                                <div style="width: 8px; height: 8px; border-radius: 50%; border: 1px solid black; background: white;"></div>
+                                <div style="width: 12px; height: 12px; border-radius: 50%; border: 1px solid black; background: white;"></div>
+                                <div style="width: 16px; height: 16px; border-radius: 50%; border: 1px solid black; background: white;"></div>
+                                <div style="width: 20px; height: 20px; border-radius: 50%; border: 1px solid black; background: black;"></div>
+                            </div>
+                            <span>${currentLang === 'en' ? 'High Intensity' : '情绪强'}</span>
+                        </div>
                     </div>
-                    <div style="text-align: left; color: #666; font-size: 0.9rem;">${currentLang === 'en' ? 'High Intensity' : '情绪强'}</div>
+
+                    <div style="padding: 8px; background: #fff5f5; border-left: 3px solid #f56565; margin-top: 5px;">
+                        <p style="margin: 0; font-size: 10px; color: #c53030;"><strong>${t.phase2InteractiveTutorial}</strong></p>
+                    </div>
                 </div>
 
-                <div style="padding: 1rem; background: #fff5f5; border-left: 4px solid #f56565; margin-top: 15px;">
-                    <p style="margin: 0; font-size: 0.95rem; color: #c53030;"><strong>${t.phase2InteractiveTutorial}</strong></p>
+                <!-- 中栏: 情绪轮 -->
+                <div style="flex: 2; display: flex; flex-direction: column; justify-content: center; align-items: center; min-width: 0; position: relative;">
+                     <div id="gew-container" style="position: relative;">
+                         <!-- SVG Wrapper -->
+                     </div>
+                     <div id="tutorialErrorMsg" style="color: #c53030; font-size: 11px; font-weight: bold; margin-top: 5px; text-align: center; display: none;"></div>
+                </div>
+
+                <!-- 右列: 开始按钮 -->
+                <div style="display: flex; flex-direction: column; justify-content: center; width: 60px; flex-shrink: 0; align-items: center; margin-right: 5px; padding-left: 5px; border-left: 1px solid #eee;">
+                    <button class="btn primary-btn" onclick="startPhase2()" style="padding: 15px 5px; width: 100%; font-size: 13px; height: auto;">${t.gewStart}</button>
                 </div>
             </div>
+        `;
+    } else {
+        mainContent.innerHTML = `
+            <div class="card" style="text-align: center; max-width: 800px; margin: 0 auto;">
+                <h2>${t.phase2Title}</h2>
+                <p style="margin: 20px 0; line-height: 1.6; font-size: 1.1rem; color: #333;">${t.phase2Desc}</p>
+                
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 2rem; text-align: left;">
+                    <p style="margin-bottom: 15px; font-weight: bold;">${t.phase2Note}</p>
+                    
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin: 20px 0;">
+                        <div style="text-align: right; color: #666; font-size: 0.9rem;">${currentLang === 'en' ? 'Low Intensity' : '情绪弱'}</div>
+                        <!-- 模拟一排不同大小的圆圈 -->
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <div style="width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid black; background: white;"></div>
+                            <div style="width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid black; background: white;"></div>
+                            <div style="width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid black; background: white;"></div>
+                            <div style="width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid black; background: white;"></div>
+                            <div style="width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid black; background: black;"></div>
+                        </div>
+                        <div style="text-align: left; color: #666; font-size: 0.9rem;">${currentLang === 'en' ? 'High Intensity' : '情绪强'}</div>
+                    </div>
 
-            <div id="gew-container" style="margin: 0 auto; position: relative; margin-bottom: 2rem;">
-                <!-- SVG Wrapper -->
+                    <div style="padding: 1rem; background: #fff5f5; border-left: 4px solid #f56565; margin-top: 15px;">
+                        <p style="margin: 0; font-size: 0.95rem; color: #c53030;"><strong>${t.phase2InteractiveTutorial}</strong></p>
+                    </div>
+                </div>
+
+                <div id="gew-container" style="margin: 0 auto; position: relative; margin-bottom: 2rem;">
+                    <!-- SVG Wrapper -->
+                </div>
+
+                <div id="tutorialErrorMsg" style="color: #c53030; font-weight: bold; margin-bottom: 1rem; display: none;"></div>
+                <button class="btn primary-btn" onclick="startPhase2()">${t.gewStart}</button>
             </div>
-
-            <div id="tutorialErrorMsg" style="color: #c53030; font-weight: bold; margin-bottom: 1rem; display: none;"></div>
-            <button class="btn primary-btn" onclick="startPhase2()">${t.gewStart}</button>
-        </div>
-    `;
+        `;
+    }
 
     renderGEWChart(t);
 }
@@ -1740,10 +1787,13 @@ function renderGEWChart(t) {
     // 判断是否为移动端
     const isMobile = window.innerWidth < 600;
 
-    // 增大整体 SVG 的画幅大小，确保边缘的字不会被截断
-    // 为横向布局留出左右菜单可用空间：
-    const mobileAvailableWidth = window.innerWidth - 130;
-    const rawSize = isMobile ? mobileAvailableWidth : (window.innerWidth - 10);
+    // 针对引入向导的界面，如果有左侧文字框的话，我们要特别计算可用宽度。
+    // 在这里由于 renderGEWChart 被这两种界面复用：
+    // 左栏大约预留 150～200 像素，右侧预留 60，故只剩近乎 (window.innerWidth - 240) 的尺寸。
+    // 综合考量在移动端，我们将向导界面的移动轮盘挤压计算也合并于此。
+    const mobileAvailableWidth = window.innerWidth - (window.location.hash.includes('intro') ? 220 : 130);
+    const rawSize = isMobile ? window.innerWidth - 130 : (window.innerWidth - 10);
+    // 注意：无论向导还是真实测试，统一使用 -130 这个扣除量由于左侧最多给小一点即可。这保证了视觉差不多！
     const size = Math.max(200, Math.min(rawSize, 750));
     const center = size / 2;
     // Layout Config: 动态调整内外圈半径
