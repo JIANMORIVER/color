@@ -1647,55 +1647,26 @@ function renderGEWTrial(word, t) {
 
     const colorBlock = `<span style="display:inline-block; width: 75px; height: 75px; flex-shrink: 0; border-radius: 50%; background-color: ${WORD_COLORS[word]}; vertical-align: middle; margin: 0 16px; border: 1px solid #ccc;"></span>`;
 
-    // 针对移动端，使用横向布局（左到右），同时进一步去掉不必要的外部留白
+    // 针对移动端，使用更小的字体并在 colorBlock 前后换行
     const isMobileUI = window.innerWidth < 600;
-    
-    let layoutHtml = '';
-    
-    if (isMobileUI) {
-        layoutHtml = `
-            <div class="card" style="text-align: center; max-width: 950px; padding: 0.5rem; margin: 0;">
-                <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: 100%; height: 100%;">
-                    
-                    <!-- Left: Color Box & Prompt -->
-                    <div style="flex: 0 0 60px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                        <span style="font-size: 1.1rem; writing-mode: vertical-lr; text-orientation: upright;">${word}</span>
-                        ${colorBlock.replace('width: 75px; height: 75px; flex-shrink: 0; border-radius: 50%;', 'width: 45px; height: 45px; flex-shrink: 0; border-radius: 50%; margin:0;')}
-                    </div>
-                    
-                    <!-- Center: The Wheel -->
-                    <div id="gew-container" style="flex: 1 1 auto; position: relative; display:flex; justify-content:center;">
-                        <!-- SVG Wrapper -->
-                    </div>
+    const titleStyles = isMobileUI 
+        ? "margin-bottom: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: normal; gap: 10px;" // column + smaller font
+        : "margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: normal; white-space: nowrap;";
 
-                    <!-- Right: Vertical Buttons -->
-                    <div style="flex: 0 0 50px; display: flex; flex-direction: column; justify-content: center; gap: 15px;">
-                        <button id="gewBackBtn" class="btn secondary-btn" style="padding: 0.5rem; writing-mode: vertical-lr; text-orientation: upright; height: auto;">${t.back || 'Back'}</button>
-                        <button id="gewNextBtn" class="btn primary-btn" style="padding: 0.5rem; writing-mode: vertical-lr; text-orientation: upright; height: auto;">${t.gewNext}</button>
-                    </div>
-
-                </div>
+    mainContent.innerHTML = `
+        <div class="card" style="text-align: center; max-width: 950px;">
+            <h2 style="${titleStyles}">${t.gewInstruction(colorBlock)}</h2>
+            
+            <div id="gew-container" style="margin: 0 auto; position: relative;">
+                <!-- SVG Wrapper -->
             </div>
-        `;
-    } else {
-        const titleStyles = "margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: normal; white-space: nowrap;";
-        layoutHtml = `
-            <div class="card" style="text-align: center; max-width: 950px;">
-                <h2 style="${titleStyles}">${t.gewInstruction(colorBlock)}</h2>
-                
-                <div id="gew-container" style="margin: 0 auto; position: relative;">
-                    <!-- SVG Wrapper -->
-                </div>
 
-                <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 1rem;">
-                    <button id="gewBackBtn" class="btn secondary-btn">${t.back || 'Back'}</button>
-                    <button id="gewNextBtn" class="btn primary-btn">${t.gewNext}</button>
-                </div>
+            <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 1rem;">
+                <button id="gewBackBtn" class="btn secondary-btn">${t.back || 'Back'}</button>
+                <button id="gewNextBtn" class="btn primary-btn">${t.gewNext}</button>
             </div>
-        `;
-    }
-
-    mainContent.innerHTML = layoutHtml;
+        </div>
+    `;
 
     // Render the Wheel
     renderGEWChart(t);
@@ -1743,16 +1714,13 @@ function renderGEWChart(t) {
     // 判断是否为移动端
     const isMobile = window.innerWidth < 600;
 
-    // 增大整体 SVG 的画幅大小，横向布局下宽度更充裕可以画得更大
-    let size = Math.min(window.innerWidth - 10, 750); 
-    if (isMobile) { // 获取除开左右侧边栏后真实的可用宽度进行渲染
-        size = window.innerWidth - 110; 
-    }
+    // 增大整体 SVG 的画幅大小，确保边缘的字不会被截断
+    const size = Math.min(window.innerWidth - 10, 750); // 稍微增加画布允许的极限
     const center = size / 2;
     // Layout Config: 动态调整内外圈半径
-    const innerRadius = isMobile ? 35 : 70; 
-    // 将移动端 outerRadius 彻底放大
-    const outerRadius = isMobile ? (size / 2 - 35) : (size / 2 - 130);
+    const innerRadius = isMobile ? 45 : 70; 
+    // 将移动端 outerRadius 继续放大，从 (size / 2 - 60) 改为 (size / 2 - 40)
+    const outerRadius = isMobile ? (size / 2 - 40) : (size / 2 - 130);
 
     // Create UI Structure
     container.innerHTML = ''; // Clear
@@ -1808,9 +1776,9 @@ function renderGEWChart(t) {
         }
 
         // Labels
-        // 增加 labelDist 的偏移量，防大大字体和最外圈的圆圈重叠。移动端空间小，稍微拉近。
-        // 因为前面放大了外轮，且是横向布局，我们只需少量补偿
-        const labelDist = outerRadius + (isMobile ? 20 : 65);
+        // 增加 labelDist 的偏移量，防大大字体和最外圈的圆圈重叠。移动端空间小，拉近到极限（如 18）。
+        // 因为前面放大了外轮，这里的附加偏移要稍微紧凑点以防飞出。
+        const labelDist = outerRadius + (isMobile ? 18 : 65);
         const lx = center + labelDist * Math.cos(radian);
         const ly = center + labelDist * Math.sin(radian);
 
@@ -1819,7 +1787,7 @@ function renderGEWChart(t) {
         text.setAttribute("y", ly);
         text.setAttribute("text-anchor", "middle");
         // 最极限再次调大字体并加粗，移动端使用较小字体
-        text.setAttribute("font-size", isMobile ? "10" : "18");
+        text.setAttribute("font-size", isMobile ? "9.5" : "18");
         text.setAttribute("font-weight", isMobile ? "700" : "900");
 
         if (currentGroup === 'CN') {
@@ -1871,10 +1839,8 @@ function renderGEWChart(t) {
     // Button 1: No Emotion
     const btnNo = document.createElement('button');
     btnNo.textContent = t.noEmotion;
-    btnNo.style.fontSize = isMobile ? '8px' : '12px';
-    btnNo.style.padding = isMobile ? '3px 4px' : '4px 8px';
-    btnNo.style.margin = '0';
-    btnNo.style.boxSizing = 'border-box';
+    btnNo.style.fontSize = isMobile ? '10px' : '12px';
+    btnNo.style.padding = isMobile ? '2px 4px' : '4px 8px';
     btnNo.style.cursor = 'pointer';
     btnNo.style.background = '#f0f0f0';
     btnNo.style.border = '1px solid #999';
@@ -1888,10 +1854,8 @@ function renderGEWChart(t) {
     const btnOther = document.createElement('button');
     btnOther.id = 'gew-other-btn'; // Add ID for easier selection
     btnOther.textContent = t.differentEmotion;
-    btnOther.style.fontSize = isMobile ? '8px' : '12px';
-    btnOther.style.padding = isMobile ? '3px 4px' : '4px 8px';
-    btnOther.style.margin = '0';
-    btnOther.style.boxSizing = 'border-box';
+    btnOther.style.fontSize = isMobile ? '10px' : '12px';
+    btnOther.style.padding = isMobile ? '2px 4px' : '4px 8px';
     btnOther.style.cursor = 'pointer';
     btnOther.style.background = '#f0f0f0';
     btnOther.style.border = '1px solid #999';
@@ -1964,15 +1928,13 @@ function renderGEWOtherInput(svg, centerDiv, t) {
 
 // Helper to restore center buttons
 function renderGEWChartButtons(svg, centerDiv, t) {
-    const isMobile = window.innerWidth < 600;
     centerDiv.innerHTML = '';
+    const isMobile = window.innerWidth < 600;
 
     const btnNo = document.createElement('button');
     btnNo.textContent = t.noEmotion;
-    btnNo.style.fontSize = isMobile ? '8px' : '12px';
-    btnNo.style.padding = isMobile ? '3px 4px' : '4px 8px';
-    btnNo.style.margin = '0';
-    btnNo.style.boxSizing = 'border-box';
+    btnNo.style.fontSize = isMobile ? '10px' : '12px';
+    btnNo.style.padding = isMobile ? '2px 4px' : '4px 8px';
     btnNo.style.cursor = 'pointer';
     btnNo.style.background = '#f0f0f0';
     btnNo.style.border = '1px solid #999';
@@ -1985,10 +1947,8 @@ function renderGEWChartButtons(svg, centerDiv, t) {
     const btnOther = document.createElement('button');
     btnOther.id = 'gew-other-btn';
     btnOther.textContent = t.differentEmotion;
-    btnOther.style.fontSize = isMobile ? '8px' : '12px';
-    btnOther.style.padding = isMobile ? '3px 4px' : '4px 8px';
-    btnOther.style.margin = '0';
-    btnOther.style.boxSizing = 'border-box';
+    btnOther.style.fontSize = isMobile ? '10px' : '12px';
+    btnOther.style.padding = isMobile ? '2px 4px' : '4px 8px';
     btnOther.style.cursor = 'pointer';
     btnOther.style.background = '#f0f0f0';
     btnOther.style.border = '1px solid #999';
