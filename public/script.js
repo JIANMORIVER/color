@@ -1654,10 +1654,10 @@ function renderGEWTrial(word, t) {
         : "margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: normal; white-space: nowrap;";
 
     mainContent.innerHTML = `
-        <div class="card" style="text-align: center; max-width: 950px;">
+        <div class="card" style="text-align: center; max-width: 950px; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
             <h2 style="${titleStyles}">${t.gewInstruction(colorBlock)}</h2>
             
-            <div id="gew-container" style="margin: 0 auto; position: relative;">
+            <div id="gew-container" style="margin: 0 auto; position: relative; display: flex; justify-content: center;">
                 <!-- SVG Wrapper -->
             </div>
 
