@@ -115,11 +115,7 @@ const i18n = {
         // GEW Design
         noEmotion: '没有情绪',
         differentEmotion: '其他情绪',
-        enterEmotion: '请输入情绪名称',
-
-        // Mobile Warning
-        mobileWarningTitle: '设备类型不支持',
-        mobileWarningDesc: '检测到您正在使用移动手机访问。为了保证实验体验和视觉呈现效果，本实验强制要求使用电脑 (PC/Mac) 或平板电脑进行。请更换设备后重新访问此链接，感谢您的配合！'
+        enterEmotion: '请输入情绪名称'
     },
     en: {
         title: 'Color Emotion Survey',
@@ -236,11 +232,7 @@ const i18n = {
         // GEW Design
         noEmotion: 'No emotion',
         differentEmotion: 'Different emotion',
-        enterEmotion: 'Please specify emotion',
-
-        // Mobile Warning
-        mobileWarningTitle: 'Unsupported Device',
-        mobileWarningDesc: 'We have detected that you are using a mobile phone. To ensure data accuracy and optimal display, this experiment is strictly supported on computers (PC/Mac) or tablets only. Please switch devices and revisit this link. Thank you!'
+        enterEmotion: 'Please specify emotion'
     }
 };
 
@@ -651,29 +643,6 @@ function renderStep() {
     // 强制每次切换界面都回到顶部
     window.scrollTo(0, 0);
 
-    const t = i18n[currentLang];
-
-    // 优先检测是否为手机
-    const isMobile = /iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (/Android/i.test(navigator.userAgent) && /Mobile/i.test(navigator.userAgent));
-    if (isMobile) {
-        const header = document.getElementById('mainHeader');
-        if (header) header.style.display = 'none';
-        if (progressText) progressText.style.display = 'none';
-        mainContent.innerHTML = `
-            <div class="card" style="text-align: center; max-width: 600px; margin-top: 2rem;">
-                <h2 style="color: #e53e3e; margin-bottom: 1.5rem;">${i18n.zh.mobileWarningTitle} <br><br> ${i18n.en.mobileWarningTitle}</h2>
-                <div style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 1.5rem; color: #333; text-align: left;">
-                    ${i18n.zh.mobileWarningDesc}
-                </div>
-                <div style="font-size: 1.05rem; line-height: 1.6; margin-bottom: 2rem; color: #333; text-align: left;">
-                    ${i18n.en.mobileWarningDesc}
-                </div>
-                <div style="font-size: 4rem;">🚫📱 ➡️ 💻</div>
-            </div>
-        `;
-        return;
-    }
-
     // Reset interaction
     if (currentStep > 0 && currentStep <= EMOTION_KEYS.length) {
         hasHueInteracted = false;
@@ -696,6 +665,7 @@ function renderStep() {
     }
 
     updateProgress();
+    const t = i18n[currentLang];
 
     const PHASE1_END = EMOTION_KEYS.length;
     const PHASE2_START = PHASE1_END + 1; // Intro
@@ -1735,35 +1705,36 @@ function renderGEWTrial(word, t) {
 // Draw the Geneva Emotion Wheel with SVG
 function renderGEWChart(t) {
     const container = document.getElementById('gew-container');
-    
-    // 强制使用基于 750 的相对坐标系（Native ViewBox）来取代原来强绑定的 window.innerWidth 像素系统
-    const baseSize = 750;
-    const center = baseSize / 2;
-    // 定义相对固定的半径体系，利用容器宽度百分比自动缩放
-    const innerRadius = 100; // 适当放大中心孔
-    const outerRadius = 260; 
+    // 判断是否为移动端
+    const isMobile = window.innerWidth < 600;
+
+    // 增大整体 SVG 的画幅大小，确保边缘的字不会被截断
+    const size = Math.min(window.innerWidth - 20, 750);
+    const center = size / 2;
+    // Layout Config: 动态调整内外圈半径
+    const innerRadius = isMobile ? 45 : 70; 
+    const outerRadius = isMobile ? (size / 2 - 80) : (size / 2 - 130);
 
     // Create UI Structure
     container.innerHTML = ''; // Clear
-    // 容器使用 aspect-ratio 固定方形，宽度撑满但限制最大物理尺寸
-    container.style.width = '100%';
-    container.style.maxWidth = '750px';
-    container.style.aspectRatio = '1 / 1';
+    container.style.width = `${size}px`;
+    container.style.height = `${size}px`;
 
     // SVG Layer
+    // ...
     const svgNS = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(svgNS, "svg");
-    // 不再使用像素定宽定高，改用 100% 配合 viewBox 以原生物理缩放
-    svg.setAttribute("width", "100%");
-    svg.setAttribute("height", "100%");
-    svg.setAttribute("viewBox", `0 0 ${baseSize} ${baseSize}`);
+    svg.setAttribute("width", size);
+    svg.setAttribute("height", size);
     svg.style.userSelect = 'none';
+    // 增加 overflow: visible 以防止极少数情况下边缘文字被框截断
     svg.style.overflow = 'visible';
 
     // 20 Emotions Distributed Evenly
     const angleStep = 360 / GEW_EMOTION_KEYS.length;
 
     GEW_EMOTION_KEYS.forEach((key, index) => {
+        // emotionName preparation moved to inside label logic
         const angle = -90 + 9 + (index * angleStep);
         const radian = (angle * Math.PI) / 180;
 
@@ -1774,12 +1745,12 @@ function renderGEWChart(t) {
 
             const cx = center + dist * Math.cos(radian);
             const cy = center + dist * Math.sin(radian);
-            const circleRadius = 4 + i * 2.2;
+            const circleRadius = 3 + i * 1.8;
 
             const circle = document.createElementNS(svgNS, "circle");
             circle.setAttribute("cx", cx);
             circle.setAttribute("cy", cy);
-            circle.setAttribute("r", circleRadius);
+            circle.setAttribute("r", isMobile ? (circleRadius * 0.8) : circleRadius); // 移动端稍微缩小圆圈
             circle.setAttribute("fill", "white"); // Default
             circle.setAttribute("stroke", "black");
             circle.setAttribute("stroke-width", "1.5");
@@ -1798,7 +1769,8 @@ function renderGEWChart(t) {
         }
 
         // Labels
-        const labelDist = outerRadius + 60;
+        // 增加 labelDist 的偏移量，防大大字体和最外圈的圆圈重叠。移动端空间小，稍微拉近。
+        const labelDist = outerRadius + (isMobile ? 35 : 65);
         const lx = center + labelDist * Math.cos(radian);
         const ly = center + labelDist * Math.sin(radian);
 
@@ -1806,24 +1778,27 @@ function renderGEWChart(t) {
         text.setAttribute("x", lx);
         text.setAttribute("y", ly);
         text.setAttribute("text-anchor", "middle");
-        text.setAttribute("font-size", "18");
-        text.setAttribute("font-weight", "900");
+        // 最极限再次调大字体并加粗，移动端使用较小字体
+        text.setAttribute("font-size", isMobile ? "9" : "18");
+        text.setAttribute("font-weight", isMobile ? "700" : "900");
 
         if (currentGroup === 'CN') {
             const en = i18n.en.gewEmotions[key];
             const zh = i18n.zh.gewEmotions[key];
 
+            // Allow vertical centering behavior roughly
             text.setAttribute("dominant-baseline", "middle");
 
+            // Create tspans
             const tspanEn = document.createElementNS(svgNS, "tspan");
             tspanEn.textContent = en;
             tspanEn.setAttribute("x", lx);
-            tspanEn.setAttribute("dy", "-0.6em"); 
+            tspanEn.setAttribute("dy", isMobile ? "-0.2em" : "-0.5em"); // Move up half line
 
             const tspanZh = document.createElementNS(svgNS, "tspan");
             tspanZh.textContent = zh;
             tspanZh.setAttribute("x", lx);
-            tspanZh.setAttribute("dy", "1.3em"); 
+            tspanZh.setAttribute("dy", isMobile ? "1.0em" : "1.2em"); // Move down a line relative to prev
 
             text.appendChild(tspanEn);
             text.appendChild(tspanZh);
@@ -1837,35 +1812,31 @@ function renderGEWChart(t) {
 
     container.appendChild(svg);
 
-    // Add Central Buttons (HTML Overlay set with percentage width)
+    // Add Central Buttons (HTML Overlay for better styling)
     const centerDiv = document.createElement('div');
     centerDiv.style.position = 'absolute';
     centerDiv.style.top = '50%';
     centerDiv.style.left = '50%';
     centerDiv.style.transform = 'translate(-50%, -50%)';
-    // 设置百分比高宽，跟随父容器(svg所在容器)自动缩放
-    centerDiv.style.width = '24%';
-    centerDiv.style.height = '24%'; 
+    centerDiv.style.width = `${innerRadius * 1.6}px`;
+    centerDiv.style.height = `${innerRadius * 1.6}px`; // Square-ish fits in circle? 
+    // Actually standard GEW has a square hub.
     centerDiv.style.display = 'flex';
     centerDiv.style.flexDirection = 'column';
     centerDiv.style.justifyContent = 'center';
     centerDiv.style.alignItems = 'center';
-    centerDiv.style.gap = '6%'; // 间距使用百分比
+    centerDiv.style.gap = '8px';
     centerDiv.style.zIndex = '10';
-
-    // 动态字号计算函数
-    const calcFontSize = 'clamp(10px, 2.5vw, 14px)';
 
     // Button 1: No Emotion
     const btnNo = document.createElement('button');
     btnNo.textContent = t.noEmotion;
-    btnNo.style.fontSize = calcFontSize;
-    btnNo.style.padding = '5% 10%';
+    btnNo.style.fontSize = isMobile ? '10px' : '12px';
+    btnNo.style.padding = isMobile ? '2px 4px' : '4px 8px';
     btnNo.style.cursor = 'pointer';
     btnNo.style.background = '#f0f0f0';
     btnNo.style.border = '1px solid #999';
     btnNo.style.borderRadius = '4px';
-    btnNo.style.width = '90%'; // 限制内部元素不溢出
     btnNo.onclick = () => {
         currentGEWSelection = { 'NO_EMOTION': 0 };
         updateGEWVisuals(svg, centerDiv);
@@ -1873,17 +1844,18 @@ function renderGEWChart(t) {
 
     // Button 2: Different Emotion
     const btnOther = document.createElement('button');
-    btnOther.id = 'gew-other-btn'; 
+    btnOther.id = 'gew-other-btn'; // Add ID for easier selection
     btnOther.textContent = t.differentEmotion;
-    btnOther.style.fontSize = calcFontSize;
-    btnOther.style.padding = '5% 10%';
+    btnOther.style.fontSize = isMobile ? '10px' : '12px';
+    btnOther.style.padding = isMobile ? '2px 4px' : '4px 8px';
     btnOther.style.cursor = 'pointer';
     btnOther.style.background = '#f0f0f0';
     btnOther.style.border = '1px solid #999';
     btnOther.style.borderRadius = '4px';
-    btnOther.style.width = '90%'; // 限制内部元素不溢出
 
+    // New In-page Input Logic
     btnOther.onclick = () => {
+        // Toggle input mode
         renderGEWOtherInput(svg, centerDiv, t);
     };
 
@@ -1899,27 +1871,23 @@ function renderGEWChart(t) {
 function renderGEWOtherInput(svg, centerDiv, t) {
     centerDiv.innerHTML = ''; // Clear current buttons
 
-    const fontStr = 'clamp(10px, 2.8vw, 13px)';
-
     const input = document.createElement('input');
     input.type = 'text';
     input.placeholder = t.enterEmotion;
-    input.style.width = '95%';
-    input.style.padding = '5%';
-    input.style.fontSize = fontStr;
-    input.style.marginBottom = '5%';
+    input.style.width = '90%';
+    input.style.padding = '4px';
+    input.style.fontSize = '12px';
+    input.style.marginBottom = '5px';
     input.id = 'gew-custom-input';
 
     const btnContainer = document.createElement('div');
     btnContainer.style.display = 'flex';
-    btnContainer.style.gap = '5%';
-    btnContainer.style.width = '100%';
-    btnContainer.style.justifyContent = 'space-around';
+    btnContainer.style.gap = '5px';
 
     const confirmBtn = document.createElement('button');
     confirmBtn.textContent = 'OK';
-    confirmBtn.style.padding = '4% 8%';
-    confirmBtn.style.fontSize = fontStr;
+    confirmBtn.style.padding = '4px 8px';
+    confirmBtn.style.fontSize = '11px';
     confirmBtn.onclick = () => {
         const val = input.value.trim();
         if (val) {
@@ -1935,8 +1903,8 @@ function renderGEWOtherInput(svg, centerDiv, t) {
 
     const cancelBtn = document.createElement('button');
     cancelBtn.textContent = 'X';
-    cancelBtn.style.padding = '4% 8%';
-    cancelBtn.style.fontSize = fontStr;
+    cancelBtn.style.padding = '4px 8px';
+    cancelBtn.style.fontSize = '11px';
     cancelBtn.onclick = () => {
         renderGEWChartButtons(svg, centerDiv, t);
     };
@@ -1954,17 +1922,14 @@ function renderGEWOtherInput(svg, centerDiv, t) {
 function renderGEWChartButtons(svg, centerDiv, t) {
     centerDiv.innerHTML = '';
 
-    const fontStr = 'clamp(10px, 2.5vw, 14px)';
-
     const btnNo = document.createElement('button');
     btnNo.textContent = t.noEmotion;
-    btnNo.style.fontSize = fontStr;
-    btnNo.style.padding = '5% 10%';
+    btnNo.style.fontSize = '12px';
+    btnNo.style.padding = '4px 8px';
     btnNo.style.cursor = 'pointer';
     btnNo.style.background = '#f0f0f0';
     btnNo.style.border = '1px solid #999';
     btnNo.style.borderRadius = '4px';
-    btnNo.style.width = '90%';
     btnNo.onclick = () => {
         currentGEWSelection = { 'NO_EMOTION': 0 };
         updateGEWVisuals(svg, centerDiv);
@@ -1973,13 +1938,12 @@ function renderGEWChartButtons(svg, centerDiv, t) {
     const btnOther = document.createElement('button');
     btnOther.id = 'gew-other-btn';
     btnOther.textContent = t.differentEmotion;
-    btnOther.style.fontSize = fontStr;
-    btnOther.style.padding = '5% 10%';
+    btnOther.style.fontSize = '12px';
+    btnOther.style.padding = '4px 8px';
     btnOther.style.cursor = 'pointer';
     btnOther.style.background = '#f0f0f0';
     btnOther.style.border = '1px solid #999';
     btnOther.style.borderRadius = '4px';
-    btnOther.style.width = '90%';
     btnOther.onclick = () => {
         renderGEWOtherInput(svg, centerDiv, t);
     };
