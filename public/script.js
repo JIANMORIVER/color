@@ -1645,28 +1645,54 @@ function renderGEWTrial(word, t) {
         });
     }
 
-    const colorBlock = `<span style="display:inline-block; width: 75px; height: 75px; flex-shrink: 0; border-radius: 50%; background-color: ${WORD_COLORS[word]}; vertical-align: middle; margin: 0 16px; border: 1px solid #ccc;"></span>`;
-
-    // 针对移动端，使用更小的字体并在 colorBlock 前后换行
     const isMobileUI = window.innerWidth < 600;
-    const titleStyles = isMobileUI 
-        ? "margin-bottom: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: normal; gap: 10px;" // column + smaller font
-        : "margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: normal; white-space: nowrap;";
+    
+    if (isMobileUI) {
+        // 横向移动端布局
+        const mobileColorBlock = `<div style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; background-color: ${WORD_COLORS[word]}; border: 1px solid #ccc; margin-bottom: 5px;"></div>`;
+        const wordDisplay = currentGroup === 'CN' ? (i18n.zh.gewWords[word] || word) : (i18n.en.gewWords[word] || word);
+        // 可选：剥离原始 t.gewInstruction('') 的占位符，但为了兼容直接展示关键词
+        
+        mainContent.innerHTML = `
+            <div style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: 100vw; margin-left: calc(-50vw + 50%); padding: 0; box-sizing: border-box; background: var(--bg-color); overflow: hidden;">
+                
+                <!-- 左列: 提示预览 -->
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 70px; flex-shrink: 0; padding-left: 5px;">
+                    ${mobileColorBlock}
+                    <div style="font-size: 11px; text-align: center; color: var(--text-color); font-weight: bold; line-height: 1.2; word-break: break-all;">
+                      ${wordDisplay}
+                    </div>
+                </div>
 
-    mainContent.innerHTML = `
-        <div class="card" style="text-align: center; max-width: 950px;">
-            <h2 style="${titleStyles}">${t.gewInstruction(colorBlock)}</h2>
-            
-            <div id="gew-container" style="margin: 0 auto; position: relative;">
-                <!-- SVG Wrapper -->
-            </div>
+                <!-- 中间: 情绪轮 -->
+                <div id="gew-container" style="flex: 1; display: flex; justify-content: center; align-items: center; min-width: 0;">
+                    <!-- SVG Wrapper -->
+                </div>
 
-            <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 1rem;">
-                <button id="gewBackBtn" class="btn secondary-btn">${t.back || 'Back'}</button>
-                <button id="gewNextBtn" class="btn primary-btn">${t.gewNext}</button>
+                <!-- 右列: 竖放按钮 -->
+                <div style="display: flex; flex-direction: column; gap: 15px; width: 60px; flex-shrink: 0; align-items: center; margin-right: 5px;">
+                    <button id="gewNextBtn" class="btn primary-btn" style="padding: 15px 5px; width: 100%; font-size: 13px; height: auto;">${t.gewNext}</button>
+                    <button id="gewBackBtn" class="btn secondary-btn" style="padding: 15px 5px; width: 100%; font-size: 13px; height: auto;">${t.back || 'Back'}</button>
+                </div>
             </div>
-        </div>
-    `;
+        `;
+    } else {
+        const colorBlock = `<span style="display:inline-block; width: 75px; height: 75px; flex-shrink: 0; border-radius: 50%; background-color: ${WORD_COLORS[word]}; vertical-align: middle; margin: 0 16px; border: 1px solid #ccc;"></span>`;
+        mainContent.innerHTML = `
+            <div class="card" style="text-align: center; max-width: 950px;">
+                <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: normal; white-space: nowrap;">${t.gewInstruction(colorBlock)}</h2>
+                
+                <div id="gew-container" style="margin: 0 auto; position: relative;">
+                    <!-- SVG Wrapper -->
+                </div>
+
+                <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 1rem;">
+                    <button id="gewBackBtn" class="btn secondary-btn">${t.back || 'Back'}</button>
+                    <button id="gewNextBtn" class="btn primary-btn">${t.gewNext}</button>
+                </div>
+            </div>
+        `;
+    }
 
     // Render the Wheel
     renderGEWChart(t);
@@ -1715,7 +1741,10 @@ function renderGEWChart(t) {
     const isMobile = window.innerWidth < 600;
 
     // 增大整体 SVG 的画幅大小，确保边缘的字不会被截断
-    const size = Math.min(window.innerWidth - 10, 750); // 稍微增加画布允许的极限
+    // 为横向布局留出左右菜单可用空间：
+    const mobileAvailableWidth = window.innerWidth - 130;
+    const rawSize = isMobile ? mobileAvailableWidth : (window.innerWidth - 10);
+    const size = Math.max(200, Math.min(rawSize, 750));
     const center = size / 2;
     // Layout Config: 动态调整内外圈半径
     const innerRadius = isMobile ? 45 : 70; 
@@ -1839,12 +1868,20 @@ function renderGEWChart(t) {
     // Button 1: No Emotion
     const btnNo = document.createElement('button');
     btnNo.textContent = t.noEmotion;
-    btnNo.style.fontSize = isMobile ? '10px' : '12px';
-    btnNo.style.padding = isMobile ? '2px 4px' : '4px 8px';
-    btnNo.style.cursor = 'pointer';
-    btnNo.style.background = '#f0f0f0';
-    btnNo.style.border = '1px solid #999';
-    btnNo.style.borderRadius = '4px';
+    const applyCenterBtnStyles = (btn) => {
+        btn.style.fontSize = isMobile ? '10px' : '12px';
+        btn.style.padding = isMobile ? '2px 4px' : '4px 8px';
+        btn.style.cursor = 'pointer';
+        btn.style.background = '#f0f0f0';
+        btn.style.border = '1px solid #999';
+        btn.style.borderRadius = '4px';
+        btn.style.maxWidth = '95%';
+        btn.style.overflow = 'hidden';
+        btn.style.textOverflow = 'ellipsis';
+        btn.style.whiteSpace = 'nowrap';
+    };
+
+    applyCenterBtnStyles(btnNo);
     btnNo.onclick = () => {
         currentGEWSelection = { 'NO_EMOTION': 0 };
         updateGEWVisuals(svg, centerDiv);
@@ -1854,12 +1891,7 @@ function renderGEWChart(t) {
     const btnOther = document.createElement('button');
     btnOther.id = 'gew-other-btn'; // Add ID for easier selection
     btnOther.textContent = t.differentEmotion;
-    btnOther.style.fontSize = isMobile ? '10px' : '12px';
-    btnOther.style.padding = isMobile ? '2px 4px' : '4px 8px';
-    btnOther.style.cursor = 'pointer';
-    btnOther.style.background = '#f0f0f0';
-    btnOther.style.border = '1px solid #999';
-    btnOther.style.borderRadius = '4px';
+    applyCenterBtnStyles(btnOther);
 
     // New In-page Input Logic
     btnOther.onclick = () => {
@@ -1932,12 +1964,21 @@ function renderGEWChartButtons(svg, centerDiv, t) {
 
     const btnNo = document.createElement('button');
     btnNo.textContent = t.noEmotion;
-    btnNo.style.fontSize = '12px';
-    btnNo.style.padding = '4px 8px';
-    btnNo.style.cursor = 'pointer';
-    btnNo.style.background = '#f0f0f0';
-    btnNo.style.border = '1px solid #999';
-    btnNo.style.borderRadius = '4px';
+    const isMobile = window.innerWidth < 600;
+    const applyCenterBtnStyles = (btn) => {
+        btn.style.fontSize = isMobile ? '10px' : '12px';
+        btn.style.padding = isMobile ? '2px 4px' : '4px 8px';
+        btn.style.cursor = 'pointer';
+        btn.style.background = '#f0f0f0';
+        btn.style.border = '1px solid #999';
+        btn.style.borderRadius = '4px';
+        btn.style.maxWidth = '95%';
+        btn.style.overflow = 'hidden';
+        btn.style.textOverflow = 'ellipsis';
+        btn.style.whiteSpace = 'nowrap';
+    };
+
+    applyCenterBtnStyles(btnNo);
     btnNo.onclick = () => {
         currentGEWSelection = { 'NO_EMOTION': 0 };
         updateGEWVisuals(svg, centerDiv);
@@ -1946,12 +1987,7 @@ function renderGEWChartButtons(svg, centerDiv, t) {
     const btnOther = document.createElement('button');
     btnOther.id = 'gew-other-btn';
     btnOther.textContent = t.differentEmotion;
-    btnOther.style.fontSize = '12px';
-    btnOther.style.padding = '4px 8px';
-    btnOther.style.cursor = 'pointer';
-    btnOther.style.background = '#f0f0f0';
-    btnOther.style.border = '1px solid #999';
-    btnOther.style.borderRadius = '4px';
+    applyCenterBtnStyles(btnOther);
     btnOther.onclick = () => {
         renderGEWOtherInput(svg, centerDiv, t);
     };
@@ -2010,18 +2046,15 @@ function updateGEWVisuals(svg, centerDiv) {
         if (currentGEWSelection['OTHER']) {
             btnOther.style.backgroundColor = '#333';
             btnOther.style.color = 'white';
-            btnOther.textContent = currentGEWSelection['OTHER']; // Show text
+            let str = currentGEWSelection['OTHER'] || "";
+            btnOther.textContent = str;
+            btnOther.title = str; // 添加 tooltip 显示全文
         } else {
             btnOther.style.backgroundColor = '#f0f0f0';
             btnOther.style.color = 'black';
-            // Need to recover label text from i18n... a bit complex to pass t here.
-            // Assume simplified approach: don't reset text or keep simple. 
-            // Ideally we pass 't' or store original text.
-            // Simplification: Not changing text back, just style.
-            // Actually, let's reset text if possible.
-            // check global i18n
             const t = i18n[currentLang];
             btnOther.textContent = t.differentEmotion;
+            btnOther.title = '';
         }
     }
 }
