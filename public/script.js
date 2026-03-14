@@ -1789,30 +1789,76 @@ function renderGEWChart(t) {
         // 最极限再次调大字体并加粗，移动端使用较小字体
         text.setAttribute("font-size", isMobile ? "9.5" : "18");
         text.setAttribute("font-weight", isMobile ? "700" : "900");
+        
+        // 关键修复：防止长文本在移动端覆盖圆圈阻挡点击事件
+        text.style.pointerEvents = "none";
 
         if (currentGroup === 'CN') {
-            const en = i18n.en.gewEmotions[key];
+            let en = i18n.en.gewEmotions[key];
             const zh = i18n.zh.gewEmotions[key];
 
             // Allow vertical centering behavior roughly
             text.setAttribute("dominant-baseline", "middle");
 
-            // Create tspans
-            const tspanEn = document.createElementNS(svgNS, "tspan");
-            tspanEn.textContent = en;
-            tspanEn.setAttribute("x", lx);
-            tspanEn.setAttribute("dy", isMobile ? "-0.2em" : "-0.5em"); // Move up half line
+            // For very long English words, split them to two lines in Mobile view
+            if (isMobile && (key === 'disappointment' || key === 'contentment')) {
+                const parts = key === 'disappointment' ? ['Disappoint-', 'ment'] : ['Content-', 'ment'];
+                
+                const tspanEn1 = document.createElementNS(svgNS, "tspan");
+                tspanEn1.textContent = parts[0];
+                tspanEn1.setAttribute("x", lx);
+                tspanEn1.setAttribute("dy", "-1.0em");
 
-            const tspanZh = document.createElementNS(svgNS, "tspan");
-            tspanZh.textContent = zh;
-            tspanZh.setAttribute("x", lx);
-            tspanZh.setAttribute("dy", isMobile ? "1.0em" : "1.2em"); // Move down a line relative to prev
+                const tspanEn2 = document.createElementNS(svgNS, "tspan");
+                tspanEn2.textContent = parts[1];
+                tspanEn2.setAttribute("x", lx);
+                tspanEn2.setAttribute("dy", "1.1em"); // relative to line 1
 
-            text.appendChild(tspanEn);
-            text.appendChild(tspanZh);
+                const tspanZh = document.createElementNS(svgNS, "tspan");
+                tspanZh.textContent = zh;
+                tspanZh.setAttribute("x", lx);
+                tspanZh.setAttribute("dy", "1.1em"); // relative to line 2
+
+                text.appendChild(tspanEn1);
+                text.appendChild(tspanEn2);
+                text.appendChild(tspanZh);
+            } else {
+                const tspanEn = document.createElementNS(svgNS, "tspan");
+                tspanEn.textContent = en;
+                tspanEn.setAttribute("x", lx);
+                tspanEn.setAttribute("dy", isMobile ? "-0.2em" : "-0.5em");
+
+                const tspanZh = document.createElementNS(svgNS, "tspan");
+                tspanZh.textContent = zh;
+                tspanZh.setAttribute("x", lx);
+                tspanZh.setAttribute("dy", isMobile ? "1.0em" : "1.2em");
+
+                text.appendChild(tspanEn);
+                text.appendChild(tspanZh);
+            }
         } else {
             text.setAttribute("dominant-baseline", "middle");
-            text.textContent = t.gewEmotions[key];
+            let en = t.gewEmotions[key];
+            
+            // Non-CN groups, also split long words manually for mobile
+            if (isMobile && (key === 'disappointment' || key === 'contentment')) {
+                const parts = key === 'disappointment' ? ['Disappoint-', 'ment'] : ['Content-', 'ment'];
+                
+                const tspanEn1 = document.createElementNS(svgNS, "tspan");
+                tspanEn1.textContent = parts[0];
+                tspanEn1.setAttribute("x", lx);
+                tspanEn1.setAttribute("dy", "-0.6em");
+
+                const tspanEn2 = document.createElementNS(svgNS, "tspan");
+                tspanEn2.textContent = parts[1];
+                tspanEn2.setAttribute("x", lx);
+                tspanEn2.setAttribute("dy", "1.2em");
+
+                text.appendChild(tspanEn1);
+                text.appendChild(tspanEn2);
+            } else {
+                text.textContent = en;
+            }
         }
 
         svg.appendChild(text);
