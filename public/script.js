@@ -1263,7 +1263,7 @@ function renderColorPicker(emotionKey, t) {
                 <div id="colorPreview" class="color-preview-box" style="width: 80px; height: 80px; background-color: hsl(${currentHSL.h}, ${currentHSL.s}%, ${currentHSL.l}%);"></div>
             </div>
 
-            <p style="text-align: center; margin-bottom: 2rem; color: #64748b; font-size: 1.3rem; font-weight: 500;">${t.emotionInstruction(emotionDisplay)}</p>
+            <p style="text-align: center; margin-bottom: 2rem; color: #64748b; font-size: ${window.innerWidth < 600 ? '1.17rem' : '1.3rem'}; font-weight: 500;">${t.emotionInstruction(emotionDisplay)}</p>
             
             <div class="color-picker-wrapper">
                 <div class="hue-slider-container" style="width: 100%">
@@ -1647,9 +1647,15 @@ function renderGEWTrial(word, t) {
 
     const colorBlock = `<span style="display:inline-block; width: 75px; height: 75px; flex-shrink: 0; border-radius: 50%; background-color: ${WORD_COLORS[word]}; vertical-align: middle; margin: 0 16px; border: 1px solid #ccc;"></span>`;
 
+    // 针对移动端，使用更小的字体并在 colorBlock 前后换行
+    const isMobileUI = window.innerWidth < 600;
+    const titleStyles = isMobileUI 
+        ? "margin-bottom: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 1.9rem; font-weight: normal; gap: 10px;" // column + smaller font
+        : "margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: normal; white-space: nowrap;";
+
     mainContent.innerHTML = `
         <div class="card" style="text-align: center; max-width: 950px;">
-            <h2 style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: normal; white-space: nowrap;">${t.gewInstruction(colorBlock)}</h2>
+            <h2 style="${titleStyles}">${t.gewInstruction(colorBlock)}</h2>
             
             <div id="gew-container" style="margin: 0 auto; position: relative;">
                 <!-- SVG Wrapper -->
@@ -1709,11 +1715,12 @@ function renderGEWChart(t) {
     const isMobile = window.innerWidth < 600;
 
     // 增大整体 SVG 的画幅大小，确保边缘的字不会被截断
-    const size = Math.min(window.innerWidth - 20, 750);
+    const size = Math.min(window.innerWidth - 10, 750); // 稍微增加画布允许的极限
     const center = size / 2;
     // Layout Config: 动态调整内外圈半径
     const innerRadius = isMobile ? 45 : 70; 
-    const outerRadius = isMobile ? (size / 2 - 80) : (size / 2 - 130);
+    // 将移动端 outerRadius 放大一些，从 (size / 2 - 80) 改为 (size / 2 - 50) 或 60 试试
+    const outerRadius = isMobile ? (size / 2 - 60) : (size / 2 - 130);
 
     // Create UI Structure
     container.innerHTML = ''; // Clear
@@ -1770,7 +1777,8 @@ function renderGEWChart(t) {
 
         // Labels
         // 增加 labelDist 的偏移量，防大大字体和最外圈的圆圈重叠。移动端空间小，稍微拉近。
-        const labelDist = outerRadius + (isMobile ? 35 : 65);
+        // 因为前面放大了外轮，这里的附加偏移要稍微紧凑点以防飞出。
+        const labelDist = outerRadius + (isMobile ? 24 : 65);
         const lx = center + labelDist * Math.cos(radian);
         const ly = center + labelDist * Math.sin(radian);
 
@@ -1779,7 +1787,7 @@ function renderGEWChart(t) {
         text.setAttribute("y", ly);
         text.setAttribute("text-anchor", "middle");
         // 最极限再次调大字体并加粗，移动端使用较小字体
-        text.setAttribute("font-size", isMobile ? "9" : "18");
+        text.setAttribute("font-size", isMobile ? "9.5" : "18");
         text.setAttribute("font-weight", isMobile ? "700" : "900");
 
         if (currentGroup === 'CN') {
