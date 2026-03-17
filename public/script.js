@@ -217,7 +217,7 @@ const i18n = {
 
         // GEW Experiment
         phase2Title: 'Phase 2: Color–Emotion Association',
-        phase2Desc: 'In this phase, you will be shown a color.<br>Select the emotion(s) that best match how the color makes you feel. You may choose more than one emotion.',
+        phase2Desc: 'In this phase, you will be shown a color.<br>Select the emotion(s) that best match how the color makes you feel. <b>You may choose more than one emotion.</b>',
         phase2Note: '', // Unused in new layout
         phase2NoteExample: 'Example: If the color feels strongly joyful, select an outer circle near Joy. You may also select additional emotions if they apply.',
         phase2InteractiveTutorial: '',
@@ -262,28 +262,25 @@ const GEW_EMOTION_KEYS = [
     'fear', 'disgust', 'contempt', 'hate', 'anger'
 ];
 const WORD_KEYS = [
-    'Red', 'Orange', 'Yellow', 'Green', 'Blue',
-    'Lilac', 'Purple', 'Pink', 'Brown', 'White',
-    'Grey', 'Black', 'Light Blue'
+    'J0', 'A0', 'G3', 'F17', 'C9',
+    'F29', 'I6', 'H35', 'D38', 'F4', 'F0'
 ];
 
 // Assuming GEW_COLORS refers to the words used in the GEW experiment, which is WORD_KEYS
 const GEW_COLORS = WORD_KEYS;
 
 const WORD_COLORS = {
-    'Red': 'rgb(188, 33, 52)',
-    'Orange': 'rgb(219, 126, 21)',
-    'Yellow': 'rgb(237, 201, 0)',
-    'Green': 'rgb(224, 61, 77)',
-    'Blue': 'rgb(35, 159, 215)',
-    'Lilac': 'rgb(190, 167, 207)',
-    'Purple': 'rgb(126, 78, 148)',
-    'Pink': 'rgb(242, 147, 182)',
-    'Brown': 'rgb(128, 90, 33)',
-    'White': 'rgb(244, 244, 244)',
-    'Grey': 'rgb(149, 149, 149)',
-    'Black': 'rgb(39, 39, 39)',
-    'Light Blue': 'rgb(224, 230, 240)'
+    'J0':  'rgb(39, 39, 39)',      // CIELAB L=15.60 a=-0.02 b=0.02   (Near Black)
+    'A0':  'rgb(243, 243, 243)',   // CIELAB L=96.00 a=-0.06 b=0.06   (Near White)
+    'G3':  'rgb(186, 40, 33)',     // CIELAB L=41.22 a=56.60 b=40.99  (Red)
+    'F17': 'rgb(0, 143, 95)',      // CIELAB L=51.57 a=-52.87 b=15.46 (Green)
+    'C9':  'rgb(254, 194, 0)',     // CIELAB L=81.35 a=7.28 b=109.12  (Yellow)
+    'F29': 'rgb(51, 125, 206)',    // CIELAB L=51.57 a=5.02 b=-48.35  (Blue)
+    'I6':  'rgb(74, 41, 23)',      // CIELAB L=20.54 a=13.28 b=18.21  (Dark Brown)
+    'H35': 'rgb(111, 45, 117)',    // CIELAB L=30.77 a=39.78 b=-27.99 (Purple)
+    'D38': 'rgb(235, 149, 196)',   // CIELAB L=71.60 a=38.97 b=-10.98 (Pink)
+    'F4':  'rgb(220, 72, 0)',      // CIELAB L=51.57 a=55.20 b=68.32  (Orange)
+    'F0':  'rgb(123, 123, 123)',   // CIELAB L=51.57 a=-0.03 b=0.04   (Grey)
 };
 
 function shuffleArray(array) {
