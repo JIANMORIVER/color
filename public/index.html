@@ -19,8 +19,20 @@
             <img src="bit_logo.png" alt="BIT Logo" style="height: 86px; width: auto;">
         </header>
 
-        <div class="progress-container">
-            <span id="progressText"></span>
+        <!-- Three-segment Global Progress Bar -->
+        <div class="global-progress-bar" id="globalProgressBar" style="display: none;">
+            <div class="progress-segment" id="seg-info" style="flex: 1;">
+                <div class="segment-fill" id="fill-info"></div>
+                <span class="segment-text" id="text-info">Information</span>
+            </div>
+            <div class="progress-segment" id="seg-task1" style="flex: 3;">
+                <div class="segment-fill" id="fill-task1"></div>
+                <span class="segment-text">Task 1</span>
+            </div>
+            <div class="progress-segment" id="seg-task2" style="flex: 2;">
+                <div class="segment-fill" id="fill-task2"></div>
+                <span class="segment-text">Task 2</span>
+            </div>
         </div>
 
         <div id="mainContent">

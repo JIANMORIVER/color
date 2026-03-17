@@ -1,6 +1,11 @@
 // 多语言配置
 const i18n = {
     zh: {
+        informationSeg: '基本信息',
+        task1Seg: '实验一',
+        task2Seg: '实验二',
+
+        languageSelect: '选择语言',
         title: '情绪色彩调研',
         // Group Selection
         groupSelect: '请选择您所在的组',
@@ -37,7 +42,7 @@ const i18n = {
         residence: '现居住国家',
         residenceDuration: '在现居地居住时长 (年)',
         nativeLang: '母语',
-        secondLang: '第二语言',
+        speaksEnglish: '您是否能熟练使用英语？',
         isDesigner: '是否从事艺术/设计相关行业？',
         hasColorBlindness: '您是否有色觉障碍（色盲或色弱等）？',
         yes: '是',
@@ -49,7 +54,6 @@ const i18n = {
         select: '请选择',
 
         // Common
-        start: '下一步',
         start: '下一步',
         next: '下一步',
         back: '上一步',
@@ -118,6 +122,11 @@ const i18n = {
         enterEmotion: '请输入情绪名称'
     },
     en: {
+        informationSeg: 'Information',
+        task1Seg: 'Task1',
+        task2Seg: 'Task2',
+        
+        languageSelect: 'Select Language',
         title: 'Color Emotion Survey',
         // Group Selection
         groupSelect: 'Select Your Group',
@@ -128,7 +137,7 @@ const i18n = {
 
         // Consent
         consentTitle: 'Informed Consent',
-        consentContent: `Dear Participant:<br><br>Welcome to this online study on color perception and preference. Before you decide to participate, please read the following carefully. The purpose of this study is to explore differences in human visual perception of color in digital environments.<br><br><b>1. Study Procedure and Environmental Requirements</b><br>This experiment is conducted entirely online and takes approximately 5-10 minutes. You will be asked to complete a series of color matching, preference selection, or identification tasks based on on-screen prompts.<br><br><b>2. Potential Risks and Discomfort</b><br>There are no known physical risks associated with this study, but prolonged screen viewing may cause visual fatigue. We recommend taking breaks as needed.<br><br><b>3. Privacy and Data Confidentiality</b><br>Anonymity: This experiment does not collect direct identifying information such as your name or IP address; data is recorded using a random identifying number.<br>Data Use: Your color selection data will be used solely for academic research/product improvement and will not be used for commercial purposes.<br>Data Storage: Data will be stored securely and access is restricted to research team members.<br><br><b>Informed Consent Statement:</b><br>I have read and understood the above information. I understand that I am free to withdraw from the experiment at any time. I agree to have my anonymous data used for this research and commit to adjusting my environment and device settings as required before starting the experiment.`,
+        consentContent: `Hello! You are sincerely invited to participate in a color science research.<br><br>This study explores how people from different cultural backgrounds associate colors and emotions, and how AI systems interpret these associations. The ultimate goal is to build a more inclusive database for color psychology and to improve AI's ability to generate culturally appropriate emotion-color associations.<br><br>The experiment only takes about 10 minutes.<br><br><b>1. Participation Requirements</b><br>age 18-60; Long-term residence in the country (more than 2 years); No color blindness or color weakness<br><br><b>2. Screen Settings</b><br>To ensure accurate color display:<br>Disable Night Mode / Eye Comfort / Blue Light Filter. Set screen brightness to medium level (about 50-70%).<br><br><b>3. Privacy & Data Use</b><br>This study does NOT collect identifying information such as your name or IP address.<br>Data will be used only for academic research and stored securely by the research team.<br><br><b>4. Voluntary Participation</b><br>Your participation is completely voluntary.<br>You may stop the experiment at any time without any consequence.`,
         consentCheck: 'I have read and agree to participate in this study and start the test',
 
         // Instructions
@@ -154,7 +163,7 @@ const i18n = {
         residence: 'Country of Residence',
         residenceDuration: 'Years in Residence',
         nativeLang: 'Native Language',
-        secondLang: 'Second Language',
+        speaksEnglish: 'Are you proficient in English?',
         isDesigner: 'Do you work in Art/Design?',
         hasColorBlindness: 'Do you have color vision deficiency (color blindness, color weakness, etc.)?',
         yes: 'Yes',
@@ -166,7 +175,6 @@ const i18n = {
         select: 'Select',
 
         // Common
-        start: 'Next',
         start: 'Next',
         next: 'Next',
         back: 'Back',
@@ -187,11 +195,11 @@ const i18n = {
 
         // Phase 1 Tutorial
         phase1TutorialTitle: 'Phase 1: Operation Tutorial',
-        phase1TutorialDesc1: 'In the following session, you will be selecting colors that best represent various emotions.',
-        phase1TutorialDesc2: 'The operating sequence is strictly:',
-        phase1TutorialStep1: '1. First, slide the **Hue bar** left or right to set the base hue (e.g., Red, Blue, Green).',
-        phase1TutorialStep2: '2. Only after sliding the Hue bar will the **Brightness/Saturation palette** appear below.',
-        phase1TutorialStep3: '3. Click or drag the cursor on the palette to pinpoint the exact color. The finalized color will appear in the circular preview above.',
+        phase1TutorialDesc1: 'In the following section, you will choose colors that best represent different emotions.',
+        phase1TutorialDesc2: 'Please follow these steps:',
+        phase1TutorialStep1: 'Move the color slider left or right to choose a base color (for example red, blue, or green).',
+        phase1TutorialStep2: 'After selecting a color, a color panel will appear below.',
+        phase1TutorialStep3: 'Click or drag your cursor on the panel to choose the exact shade you want.<br><br>The color you select will appear in the circle preview above.',
         phase1TutorialUnderstood: 'Understood, Start Phase 1',
 
         // Color Picker
@@ -208,12 +216,12 @@ const i18n = {
         emotionInstruction: (emotion) => `Please slide the hue bar to set the main color, then pick the exact color in the palette that best represents "${emotion}".`,
 
         // GEW Experiment
-        phase2Title: 'Phase 2: Word Association (Tutorial)',
-        phase2Desc: 'In this phase, you will see a series of color words. Please use the "Geneva Emotion Wheel" to indicate which emotion(s) the color represents to you.',
-        phase2Note: 'Click the circles on the wheel to indicate emotion intensity. Smaller inner circles = weaker emotion, larger outer circles = stronger emotion. You may also select "No emotion" or "Different emotion".',
-        phase2NoteExample: 'Example: Clicking the largest circle implies an "extremely strong emotion". Multiple selections across the wheel are allowed.',
-        phase2InteractiveTutorial: 'Interactive Tutorial: Tom felt strong sadness and moderate regret, but accidentally misclicked strong joy (Joy).<br><br>On the wheel below:<br>1. Deselect "Joy"<br>2. Select the outermost circle for "Sadness" and the middle (3rd) circle for "Regret".<br><br>Correct completion is required to proceed.',
-        phase2TutorialError: 'Tutorial incomplete! Please ensure you deselected "Joy", and selected the outermost (5th) circle for "Sadness" and the middle (3rd) circle for "Regret".',
+        phase2Title: 'Phase 2: Color–Emotion Association',
+        phase2Desc: 'In this phase, you will be shown a color.<br>Select the emotion(s) that best match how the color makes you feel. You may choose more than one emotion.',
+        phase2Note: '', // Unused in new layout
+        phase2NoteExample: 'Example: If the color feels strongly joyful, select an outer circle near Joy. You may also select additional emotions if they apply.',
+        phase2InteractiveTutorial: '',
+        phase2TutorialError: '',
         gewStart: 'Start Phase 2',
         gewNext: 'Next',
         gewSubmit: 'Submit All Results',
@@ -258,6 +266,9 @@ const WORD_KEYS = [
     'Lilac', 'Purple', 'Pink', 'Brown', 'White',
     'Grey', 'Black', 'Light Blue'
 ];
+
+// Assuming GEW_COLORS refers to the words used in the GEW experiment, which is WORD_KEYS
+const GEW_COLORS = WORD_KEYS;
 
 const WORD_COLORS = {
     'Red': 'rgb(188, 33, 52)',
@@ -544,7 +555,6 @@ const LANGUAGES = [
     { value: 'none', label: 'None 无' }
 ];
 
-const progressText = document.getElementById('progressText');
 const mainContent = document.getElementById('mainContent');
 const appTitle = document.getElementById('appTitle');
 
@@ -637,6 +647,15 @@ function updateStaticText() {
     if (fsText) {
         fsText.textContent = document.fullscreenElement ? t.fullScreenExit : t.fullScreenEnter;
     }
+
+    const textInfo = document.getElementById('text-info');
+    if (textInfo) {
+        textInfo.textContent = 'Information';
+        const segTask1Text = document.querySelector('#seg-task1 .segment-text');
+        const segTask2Text = document.querySelector('#seg-task2 .segment-text');
+        if (segTask1Text) segTask1Text.textContent = 'Task 1';
+        if (segTask2Text) segTask2Text.textContent = 'Task 2';
+    }
 }
 
 function renderStep() {
@@ -699,18 +718,60 @@ function renderStep() {
 }
 
 function updateProgress() {
-    const PHASE1_END = EMOTION_KEYS.length;
-    const PHASE2_TRIALS_START = PHASE1_END + 2;
-    const TOTAL = PHASE1_END + WORD_KEYS.length;
+    const bar = document.getElementById('globalProgressBar');
+    if (!bar) return;
+    
+    let phase = 'info'; // Default phase for steps <= 0 (Consent, Instructions, ColorBlind, UserInfo)
 
-    if (currentStep > 0 && currentStep <= PHASE1_END) {
-        progressText.textContent = `Part 1: ${currentStep}/${PHASE1_END}`;
-        progressText.style.display = 'block';
-    } else if (currentStep >= PHASE2_TRIALS_START && currentStep < TOTAL + 2) { // +2 roughly
-        progressText.textContent = `Part 2: ${currentStep - PHASE2_TRIALS_START + 1}/${WORD_KEYS.length}`;
-        progressText.style.display = 'block';
+    if (typeof EMOTION_KEYS === 'undefined' || typeof WORD_KEYS === 'undefined') return;
+
+    const PHASE1_END = EMOTION_KEYS.length;
+    const PHASE2_INTRO = PHASE1_END + 1;
+    const PHASE2_TRIALS_START = PHASE1_END + 2;
+    const PHASE2_END = PHASE2_TRIALS_START + WORD_KEYS.length - 1;
+
+    // 在填写信息页面（step < 0.5）之前，进度条不显示
+    if (currentStep < 0.5) {
+        bar.style.display = 'none';
+        return;
     } else {
-        progressText.style.display = 'none';
+        bar.style.display = 'flex';
+    }
+
+    // step=0.5 是 Phase1 Tutorial，属于 info 阶段（不推进 task1）
+    if (currentStep >= 1 && currentStep <= PHASE1_END) {
+        phase = 'task1';
+    } else if (currentStep >= PHASE2_INTRO && currentStep <= PHASE2_END) {
+        phase = 'task2';
+    } else if (currentStep > PHASE2_END) {
+        phase = 'done';
+    }
+
+    const fillInfo = document.getElementById('fill-info');
+    const fillTask1 = document.getElementById('fill-task1');
+    const fillTask2 = document.getElementById('fill-task2');
+
+    if (!fillInfo || !fillTask1 || !fillTask2) return;
+
+    if (phase === 'info') {
+        fillInfo.style.width = '100%'; 
+        fillTask1.style.width = '0%';
+        fillTask2.style.width = '0%';
+    } else if (phase === 'task1') {
+        fillInfo.style.width = '100%';
+        const task1Percent = (currentStep / PHASE1_END) * 100;
+        fillTask1.style.width = `${task1Percent}%`;
+        fillTask2.style.width = '0%';
+    } else if (phase === 'task2') {
+        fillInfo.style.width = '100%';
+        fillTask1.style.width = '100%';
+        const task2Index = currentStep >= PHASE2_TRIALS_START ? (currentStep - PHASE2_TRIALS_START + 1) : 0;
+        const task2Percent = Math.min(100, (task2Index / WORD_KEYS.length) * 100);
+        fillTask2.style.width = `${task2Percent}%`;
+    } else if (phase === 'done') {
+        fillInfo.style.width = '100%';
+        fillTask1.style.width = '100%';
+        fillTask2.style.width = '100%';
     }
 }
 
@@ -770,38 +831,120 @@ function renderConsent(t) {
 }
 
 function renderInstructions(t) {
+    const isEn = currentLang === 'en';
+    const ovTitle = isEn ? 'Experimental Procedure Overview' : '实验流程概览';
+    const ovDesc = isEn ? 'The experiment consists of <b>two tasks</b>.<br>It will take a total of 10 minutes.' : '本实验包含<b>两项主任务</b>。<br>总共耗时约 10 分钟。';
+    const t1Title = isEn ? 'Task 1<br>Emotion-to-Color' : '任务一<br>情感提取色彩';
+    const t1Sub = isEn ? '20 emotion keywords' : '20 个情感词汇';
+    const t2Title = isEn ? 'Task 2<br>Color-to-Emotion' : '任务二<br>色彩联想情感';
+    const t2Sub = isEn ? '13 colors' : '13 种颜色';
+    const nextText = isEn ? 'Next' : '开始';
+
+    const task1SVG = `
+    <svg viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width: 250px;">
+      <text x="150" y="40" font-size="12" text-anchor="middle" fill="#666">Interest</text>
+      <circle cx="150" cy="70" r="15" fill="#db7e15" />
+      <defs>
+        <linearGradient id="hueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#ff0000" /><stop offset="17%" stop-color="#ffff00" /><stop offset="33%" stop-color="#00ff00" /><stop offset="50%" stop-color="#00ffff" /><stop offset="67%" stop-color="#0000ff" /><stop offset="83%" stop-color="#ff00ff" /><stop offset="100%" stop-color="#ff0000" />
+        </linearGradient>
+        <linearGradient id="satGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#ffffff" /><stop offset="100%" stop-color="#db7e15" />
+        </linearGradient>
+        <linearGradient id="valGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+          <stop offset="0%" stop-color="#000000" /><stop offset="100%" stop-color="transparent" />
+        </linearGradient>
+      </defs>
+      <rect x="25" y="100" width="250" height="6" fill="url(#hueGrad)" rx="3" />
+      <circle cx="65" cy="103" r="5" fill="white" stroke="#ccc" />
+      <rect x="25" y="115" width="250" height="90" fill="url(#satGrad)" rx="4" />
+      <rect x="25" y="115" width="250" height="90" fill="url(#valGrad)" rx="4" />
+      <circle cx="210" cy="130" r="4" fill="transparent" stroke="white" stroke-width="1.5" />
+      <rect x="25" y="215" width="250" height="20" fill="black" rx="2" />
+      <text x="150" y="228" font-size="8" text-anchor="middle" fill="white" font-weight="bold">NEXT</text>
+    </svg>
+    `;
+
+    const task2SVG = `
+    <svg viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width: 250px;">
+      <text x="150" y="30" font-size="10" text-anchor="middle" fill="#333">What emotion(s) do you associate with <tspan fill="#e3342f" font-size="16">●</tspan> ?</text>
+      <g transform="translate(150, 115)">
+        ${[30, 50, 70].map((r, i) => {
+          let dots = '';
+          const numDots = 16;
+          for(let j=0; j<numDots; j++) {
+             const angle = (Math.PI * 2 * j) / numDots;
+             dots += `<circle cx="${r * Math.cos(angle)}" cy="${r * Math.sin(angle)}" r="${2 + i*1.2}" fill="white" stroke="#666" stroke-width="0.8" />`;
+          }
+          return dots;
+        }).join('')}
+        <rect x="-30" y="-12" width="60" height="10" fill="#f0f0f0" stroke="#ccc" rx="2"/>
+        <text x="0" y="-5" font-size="5" text-anchor="middle" fill="#333">No emotion</text>
+        <rect x="-32" y="2" width="64" height="10" fill="#f0f0f0" stroke="#ccc" rx="2"/>
+        <text x="0" y="9" font-size="5" text-anchor="middle" fill="#333">Different emotion</text>
+      </g>
+      <rect x="70" y="215" width="60" height="20" fill="white" stroke="black" rx="2" />
+      <text x="100" y="228" font-size="8" text-anchor="middle" fill="black" font-weight="bold">BACK</text>
+      <rect x="140" y="215" width="90" height="20" fill="black" rx="2" />
+      <text x="185" y="228" font-size="8" text-anchor="middle" fill="white" font-weight="bold">NEXT</text>
+    </svg>
+    `;
+
     mainContent.innerHTML = `
-        <div class="card" style="max-width: 800px;">
-            <h2>${t.instructionsTitle}</h2>
-            <div style="margin-bottom: 2rem; line-height: 1.8; text-align: left;">
-                ${t.instructionsContent}
+        <div class="card" style="max-width: 900px; padding: 2rem;">
+            <h2 style="text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">${ovTitle}</h2>
+            <p style="text-align: center; font-size: 1.1rem; color: #333; margin-bottom: 2rem; line-height: 1.6;">
+                ${ovDesc}
+            </p>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem; justify-content: center; margin-bottom: 3rem;">
+                <!-- Task 1 Card -->
+                <div style="flex: 1; min-width: 280px; max-width: 400px; text-align: center;">
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; color: #000; line-height: 1.3;">${t1Title}</h3>
+                    <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+                        ${task1SVG}
+                    </div>
+                    <p style="font-size: 1rem; color: #444;">${t1Sub}</p>
+                </div>
+
+                <!-- Task 2 Card -->
+                <div style="flex: 1; min-width: 280px; max-width: 400px; text-align: center;">
+                    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; color: #000; line-height: 1.3;">${t2Title}</h3>
+                    <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
+                        ${task2SVG}
+                    </div>
+                    <p style="font-size: 1rem; color: #444;">${t2Sub}</p>
+                </div>
             </div>
             
-            <div style="margin-bottom: 2rem; text-align: center;">
-                <button id="fullscreenBtn" class="btn secondary-btn" style="border-radius: 4px;">
-                    <svg style="width:16px; height:16px; vertical-align:middle; margin-right:8px; display:inline-block;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-                    </svg>
+            <div style="margin-bottom: 1.5rem; text-align: center;">
+                <button id="fullscreenBtn" class="btn secondary-btn" style="border-radius: 4px; font-size: 0.9rem; padding: 8px 16px; background: transparent; border: 1px solid #ccc; cursor: pointer; color: #333; font-weight: bold;">
+                    <svg style="width:16px; height:16px; vertical-align:middle; margin-right:6px; display:inline-block;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                     ${t.enterFullScreen}
                 </button>
             </div>
 
-            <button id="instBtn" class="btn primary-btn">${t.next}</button>
+            <div style="text-align: center;">
+                <button id="instBtn" class="btn" style="width: 100%; max-width: 250px; padding: 15px; font-size: 1.3rem; background-color: #000; color: #fff; font-weight: bold; border-radius: 6px; cursor: pointer; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">${nextText}</button>
+            </div>
         </div>
     `;
 
-    document.getElementById('fullscreenBtn').addEventListener('click', () => {
-        const docObj = document.documentElement;
-        if (docObj.requestFullscreen) {
-            docObj.requestFullscreen();
-        } else if (docObj.mozRequestFullScreen) { // Firefox
-            docObj.mozRequestFullScreen();
-        } else if (docObj.webkitRequestFullscreen) { // Chrome, Safari and Opera
-            docObj.webkitRequestFullscreen();
-        } else if (docObj.msRequestFullscreen) { // IE/Edge
-            docObj.msRequestFullscreen();
-        }
-    });
+    const fsBtn = document.getElementById('fullscreenBtn');
+    if (fsBtn) {
+        fsBtn.addEventListener('click', () => {
+            const docObj = document.documentElement;
+            if (docObj.requestFullscreen) {
+                docObj.requestFullscreen();
+            } else if (docObj.mozRequestFullScreen) { // Firefox
+                docObj.mozRequestFullScreen();
+            } else if (docObj.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                docObj.webkitRequestFullscreen();
+            } else if (docObj.msRequestFullscreen) { // IE/Edge
+                docObj.msRequestFullscreen();
+            }
+        });
+    }
 
     document.getElementById('instBtn').addEventListener('click', () => {
         currentStep++;
@@ -946,9 +1089,12 @@ function renderUserInfoForm(t) {
                     <input type="text" id="nativeLangOther" class="other-input" style="display:none; margin-top:0.5rem;" placeholder="Please specify / 请注明">
                 </div>
                  <div class="form-group">
-                    <label for="secondLang">${t.secondLang}</label>
-                    <select id="secondLang" required>${secondLangOptions}</select>
-                    <input type="text" id="secondLangOther" class="other-input" style="display:none; margin-top:0.5rem;" placeholder="Please specify / 请注明">
+                    <label for="speaksEnglish">${t.speaksEnglish}</label>
+                    <select id="speaksEnglish" required>
+                        <option value="">${t.select}</option>
+                        <option value="yes">${t.yes}</option>
+                        <option value="no">${t.no}</option>
+                    </select>
                 </div>
 
                 <!-- Profession -->
@@ -990,7 +1136,6 @@ function renderUserInfoForm(t) {
     setupOtherToggle('nationality', 'nationalityOther');
     setupOtherToggle('residence', 'residenceOther');
     setupOtherToggle('nativeLang', 'nativeLangOther');
-    setupOtherToggle('secondLang', 'secondLangOther');
 
     document.getElementById('infoForm').addEventListener('submit', (e) => {
         e.preventDefault();
@@ -1017,7 +1162,7 @@ function renderUserInfoForm(t) {
             residence: getValue('residence', 'residenceOther'),
             residence_duration: document.getElementById('residenceDuration').value,
             native_lang: getValue('nativeLang', 'nativeLangOther'),
-            second_lang: getValue('secondLang', 'secondLangOther'),
+            speaks_english: document.getElementById('speaksEnglish').value === 'yes',
             is_designer: document.getElementById('isDesigner').value === 'yes',
             monitor_model: document.getElementById('monitorModel').value || 'Unknown',
             has_color_blindness: document.getElementById('hasColorBlindness').value === 'yes'
@@ -1044,8 +1189,12 @@ function renderPhase1Tutorial(t) {
                 <div id="tutColorPreview" class="color-preview-box" style="width: 80px; height: 80px; background-color: hsl(180, 50%, 50%);"></div>
             </div>
 
-            <p style="text-align: center; margin-bottom: 1rem; font-size: 1.1rem; color: #333;">${t.phase1TutorialDesc1} ${t.phase1TutorialDesc2}</p>
-            <p style="text-align: center; margin-bottom: 1.5rem; color: #64748b;">${t.phase1TutorialStep1} ${t.phase1TutorialStep2} ${t.phase1TutorialStep3}</p>
+            <p style="text-align: center; margin-bottom: 1.5rem; font-size: 1.1rem; color: #333;">${t.phase1TutorialDesc1}<br><br>${t.phase1TutorialDesc2}</p>
+            <div style="text-align: left; margin: 0 auto 1.5rem auto; max-width: 500px; color: #64748b; line-height: 1.6;">
+                ${t.phase1TutorialStep1}<br><br>
+                ${t.phase1TutorialStep2}<br><br>
+                ${t.phase1TutorialStep3}
+            </div>
             
             <div class="color-picker-wrapper">
                 <div class="hue-slider-container" style="width: 100%">
@@ -1552,18 +1701,17 @@ function renderColorPicker(emotionKey, t) {
 }
 
 function renderGEWIntro(t) {
-    // 强制初始化错误状态用于互动演练
-    currentGEWSelection = { 'joy': 5 };
+    // 初始化为空，而不是预设错误项
+    currentGEWSelection = {};
 
     mainContent.innerHTML = `
         <div class="card" style="text-align: center; max-width: 800px; margin: 0 auto;">
             <h2>${t.phase2Title}</h2>
             <p style="margin: 20px 0; line-height: 1.6; font-size: 1.1rem; color: #333;">${t.phase2Desc}</p>
+            <p style="margin: 20px 0; line-height: 1.6; font-size: 1rem; color: #555;">${t.phase2NoteExample}</p>
             
             <div style="background: #f8fafc; padding: 1.5rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 2rem; text-align: left;">
-                <p style="margin-bottom: 15px; font-weight: bold;">${t.phase2Note}</p>
-                
-                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin: 20px 0;">
+                <div style="display: flex; justify-content: center; align-items: center; gap: 15px; margin: 10px 0 20px 0;">
                     <div style="text-align: right; color: #666; font-size: 0.9rem;">${currentLang === 'en' ? 'Low Intensity' : '情绪弱'}</div>
                     <!-- 模拟一排不同大小的圆圈 -->
                     <div style="display: flex; gap: 10px; align-items: center;">
@@ -1575,56 +1723,24 @@ function renderGEWIntro(t) {
                     </div>
                     <div style="text-align: left; color: #666; font-size: 0.9rem;">${currentLang === 'en' ? 'High Intensity' : '情绪强'}</div>
                 </div>
-
-                <div style="padding: 1rem; background: #fff5f5; border-left: 4px solid #f56565; margin-top: 15px;">
-                    <p style="margin: 0; font-size: 0.95rem; color: #c53030;"><strong>${t.phase2InteractiveTutorial}</strong></p>
-                </div>
+                
+                <p style="text-align: center; margin: 15px 0 0 0; color: #555;">
+                    ${currentLang === 'en' ? 'If none match, select "No emotion" or "Different emotion."' : '如果没有匹配的，请选择“没有情绪”或“其他情绪”。'}
+                </p>
+                <p style="text-align: center; margin: 15px 0 0 0; font-weight: bold; color: #333;">
+                    ${currentLang === 'en' ? 'Click Start Phase 2 when you are ready.' : '准备好后请点击开始第二阶段。'}
+                </p>
             </div>
 
-            <div id="gew-container" style="margin: 0 auto; position: relative; margin-bottom: 2rem;">
-                <!-- SVG Wrapper -->
-            </div>
-
-            <div id="tutorialErrorMsg" style="color: #c53030; font-weight: bold; margin-bottom: 1rem; display: none;"></div>
-            <button class="btn primary-btn" onclick="startPhase2()">${t.gewStart}</button>
+            <button class="btn primary-btn" style="margin-top: 1rem;" onclick="startPhase2()">${t.gewStart}</button>
         </div>
     `;
-
-    renderGEWChart(t);
 }
 
 window.startPhase2 = () => {
-    // 拦截校验互动演练是否正确完成
-    const hasSadness = currentGEWSelection['sadness'] === 5;
-    const hasRegret = currentGEWSelection['regret'] === 3;
-    const hasJoy = currentGEWSelection['joy'] !== undefined;
-    const keyCount = Object.keys(currentGEWSelection).length;
-
-    // 如果选择项刚巧只有两个，且正好就是上述两个，且没有欢乐
-    if (hasSadness && hasRegret && !hasJoy && keyCount === 2) {
-        randomizedWordKeys = shuffleArray(WORD_KEYS);
-        currentStep++;
-        renderStep();
-    } else {
-        const errorMsg = document.getElementById('tutorialErrorMsg');
-        if (errorMsg) {
-            errorMsg.textContent = i18n[currentLang].phase2TutorialError;
-            errorMsg.style.display = 'block';
-
-            // 加入一个简单的震动动画提醒用户
-            errorMsg.animate([
-                { transform: 'translateX(0px)' },
-                { transform: 'translateX(-5px)' },
-                { transform: 'translateX(5px)' },
-                { transform: 'translateX(-5px)' },
-                { transform: 'translateX(5px)' },
-                { transform: 'translateX(0px)' }
-            ], { duration: 400, iterations: 1 });
-        } else {
-            // 后备措施
-            showToast(i18n[currentLang].phase2TutorialError);
-        }
-    }
+    randomizedWordKeys = shuffleArray(WORD_KEYS);
+    currentStep++;
+    renderStep();
 };
 
 let currentGEWSelection = {}; // Store selection for current word: { 'anger': 5, 'joy': 2 }

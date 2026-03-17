@@ -26,7 +26,6 @@
 
 body {
     font-family: 'Times New Roman', 'SimSun', serif;
-    /* Serif logic for academic feel, fallback to system */
     background-color: var(--bg-color);
     color: var(--text-color);
     line-height: 1.6;
@@ -63,21 +62,9 @@ h1 {
     letter-spacing: 0.5px;
 }
 
-/* Updated Progress Display to be Text */
-.progress-container {
-    width: 100%;
-    text-align: center;
-    margin-top: 1rem;
-    font-size: 1rem;
-    font-weight: normal;
-    font-family: 'Courier New', monospace;
-    color: var(--text-color);
-}
-
 .card {
     background: transparent;
     padding: 0;
-    /* Remove padding to merge with bg */
     border-radius: 0;
     box-shadow: none;
     margin-bottom: 2rem;
@@ -85,15 +72,8 @@ h1 {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 h2 {
@@ -128,7 +108,6 @@ select {
     font-size: 1rem;
     background: #fff;
     font-family: inherit;
-    transition: none;
 }
 
 input:focus,
@@ -136,7 +115,6 @@ select:focus {
     outline: none;
     border: 2px solid #000;
     box-shadow: none;
-    background: #fff;
 }
 
 .btn {
@@ -156,12 +134,10 @@ select:focus {
     background-color: #000;
     color: #fff;
     width: 100%;
-    box-shadow: none;
 }
 
 .primary-btn:hover {
     background-color: #333;
-    transform: none;
 }
 
 .secondary-btn {
@@ -172,7 +148,6 @@ select:focus {
 
 .secondary-btn:hover {
     background-color: #eee;
-    border-color: #000;
 }
 
 /* Color Picker Styles */
@@ -189,7 +164,6 @@ select:focus {
     height: 250px;
     border-radius: 8px;
     cursor: crosshair;
-    box-shadow: var(--shadow);
     overflow: hidden;
     transition: opacity 0.3s;
 }
@@ -229,9 +203,8 @@ select:focus {
     height: 60px;
     border-radius: 50%;
     border: 3px solid white;
-    box-shadow: var(--shadow);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     flex-shrink: 0;
-    transition: background-color 0.2s;
 }
 
 #hueSlider,
@@ -257,9 +230,7 @@ select:focus {
 }
 
 /* Admin Table */
-.hidden {
-    display: none;
-}
+.hidden { display: none; }
 
 .toolbar {
     display: flex;
@@ -272,25 +243,17 @@ select:focus {
     overflow-x: auto;
     background: white;
     border-radius: 0.5rem;
-    box-shadow: var(--shadow);
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+table { width: 100%; border-collapse: collapse; }
 
-th,
-td {
+th, td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid #ddd;
 }
 
-th {
-    background-color: #f8fafc;
-    font-weight: 600;
-}
+th { background-color: #f8fafc; font-weight: 600; }
 
 .color-dot {
     display: inline-block;
@@ -322,4 +285,61 @@ footer {
     font-style: italic;
     margin: 2rem 0;
     font-size: 1.1rem;
+}
+
+/* Global Three-segment Progress Bar */
+.global-progress-bar {
+    display: flex;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 2rem auto;
+    gap: 15px;
+    height: 40px;
+}
+
+.progress-segment {
+    flex: 1;
+    border: 2px solid #000;
+    position: relative;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.segment-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: #e2e8f0;
+    z-index: 1;
+    transition: width 0.3s ease;
+}
+
+.segment-text {
+    position: relative;
+    z-index: 2;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+/* Mobile Adaptation */
+@media screen and (max-width: 600px) {
+    .global-progress-bar {
+        gap: 8px;
+        height: 32px;
+        margin-bottom: 1.5rem;
+    }
+    .segment-text {
+        font-size: 0.8rem;
+    }
+    .progress-segment {
+        border-width: 1px;
+    }
 }
