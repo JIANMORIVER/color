@@ -270,17 +270,17 @@ const WORD_KEYS = [
 const GEW_COLORS = WORD_KEYS;
 
 const WORD_COLORS = {
-    'J0':  'rgb(38, 38, 38)',      // HEX #262626 (Near Black)
-    'A0':  'rgb(242, 242, 242)',   // HEX #F2F2F2 (Near White)
-    'G3':  'rgb(187, 31, 35)',     // HEX #BB1F23 (Red)
-    'F17': 'rgb(0, 144, 74)',      // HEX #00904A (Green)
-    'C9':  'rgb(255, 188, 0)',     // HEX #FFBC00 (Yellow)
-    'F29': 'rgb(0, 127, 211)',     // HEX #007FD3 (Blue)
-    'I6':  'rgb(75, 40, 25)',      // HEX #4B2819 (Dark Brown)
-    'H35': 'rgb(111, 42, 120)',    // HEX #6F2A78 (Purple)
-    'D38': 'rgb(243, 142, 187)',   // HEX #F38EBB (Pink)
-    'F4':  'rgb(221, 66, 0)',      // HEX #DD4200 (Orange)
-    'F0':  'rgb(128, 128, 128)',   // HEX #808080 (Grey)
+    'J0':  'rgb(38, 38, 38)',      // Near Black
+    'A0':  'rgb(242, 242, 242)',   // Near White
+    'G3':  'rgb(187, 31, 35)',     // Red
+    'F17': 'rgb(0, 144, 74)',      // Green
+    'C9':  'rgb(255, 188, 0)',     // Yellow
+    'F29': 'rgb(0, 127, 211)',     // Blue
+    'I6':  'rgb(75, 40, 25)',      // Dark Brown
+    'H35': 'rgb(111, 42, 120)',    // Purple
+    'D38': 'rgb(243, 142, 187)',   // Pink
+    'F4':  'rgb(221, 66, 0)',      // Orange
+    'F0':  'rgb(128, 128, 128)',   // Grey
 };
 
 function shuffleArray(array) {
