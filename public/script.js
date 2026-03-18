@@ -270,17 +270,17 @@ const WORD_KEYS = [
 const GEW_COLORS = WORD_KEYS;
 
 const WORD_COLORS = {
-    'J0':  'rgb(39, 39, 39)',      // CIELAB L=15.60 a=-0.02 b=0.02   (Near Black)
-    'A0':  'rgb(243, 243, 243)',   // CIELAB L=96.00 a=-0.06 b=0.06   (Near White)
-    'G3':  'rgb(186, 40, 33)',     // CIELAB L=41.22 a=56.60 b=40.99  (Red)
-    'F17': 'rgb(0, 143, 95)',      // CIELAB L=51.57 a=-52.87 b=15.46 (Green)
-    'C9':  'rgb(254, 194, 0)',     // CIELAB L=81.35 a=7.28 b=109.12  (Yellow)
-    'F29': 'rgb(51, 125, 206)',    // CIELAB L=51.57 a=5.02 b=-48.35  (Blue)
-    'I6':  'rgb(74, 41, 23)',      // CIELAB L=20.54 a=13.28 b=18.21  (Dark Brown)
-    'H35': 'rgb(111, 45, 117)',    // CIELAB L=30.77 a=39.78 b=-27.99 (Purple)
-    'D38': 'rgb(235, 149, 196)',   // CIELAB L=71.60 a=38.97 b=-10.98 (Pink)
-    'F4':  'rgb(220, 72, 0)',      // CIELAB L=51.57 a=55.20 b=68.32  (Orange)
-    'F0':  'rgb(123, 123, 123)',   // CIELAB L=51.57 a=-0.03 b=0.04   (Grey)
+    'J0':  'rgb(38, 38, 38)',      // HEX #262626 (Near Black)
+    'A0':  'rgb(242, 242, 242)',   // HEX #F2F2F2 (Near White)
+    'G3':  'rgb(187, 31, 35)',     // HEX #BB1F23 (Red)
+    'F17': 'rgb(0, 144, 74)',      // HEX #00904A (Green)
+    'C9':  'rgb(255, 188, 0)',     // HEX #FFBC00 (Yellow)
+    'F29': 'rgb(0, 127, 211)',     // HEX #007FD3 (Blue)
+    'I6':  'rgb(75, 40, 25)',      // HEX #4B2819 (Dark Brown)
+    'H35': 'rgb(111, 42, 120)',    // HEX #6F2A78 (Purple)
+    'D38': 'rgb(243, 142, 187)',   // HEX #F38EBB (Pink)
+    'F4':  'rgb(221, 66, 0)',      // HEX #DD4200 (Orange)
+    'F0':  'rgb(128, 128, 128)',   // HEX #808080 (Grey)
 };
 
 function shuffleArray(array) {
@@ -834,7 +834,7 @@ function renderInstructions(t) {
     const t1Title = isEn ? 'Task 1<br>Emotion-to-Color' : '任务一<br>情感提取色彩';
     const t1Sub = isEn ? '20 emotion keywords' : '20 个情感词汇';
     const t2Title = isEn ? 'Task 2<br>Color-to-Emotion' : '任务二<br>色彩联想情感';
-    const t2Sub = isEn ? '13 colors' : '13 种颜色';
+    const t2Sub = isEn ? '11 colors' : '11 种颜色';
     const nextText = isEn ? 'Next' : '开始';
 
     const task1SVG = `
@@ -862,30 +862,7 @@ function renderInstructions(t) {
     </svg>
     `;
 
-    const task2SVG = `
-    <svg viewBox="0 0 300 250" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; max-width: 250px;">
-      <text x="150" y="30" font-size="10" text-anchor="middle" fill="#333">What emotion(s) do you associate with <tspan fill="#e3342f" font-size="16">●</tspan> ?</text>
-      <g transform="translate(150, 115)">
-        ${[30, 50, 70].map((r, i) => {
-          let dots = '';
-          const numDots = 16;
-          for(let j=0; j<numDots; j++) {
-             const angle = (Math.PI * 2 * j) / numDots;
-             dots += `<circle cx="${r * Math.cos(angle)}" cy="${r * Math.sin(angle)}" r="${2 + i*1.2}" fill="white" stroke="#666" stroke-width="0.8" />`;
-          }
-          return dots;
-        }).join('')}
-        <rect x="-30" y="-12" width="60" height="10" fill="#f0f0f0" stroke="#ccc" rx="2"/>
-        <text x="0" y="-5" font-size="5" text-anchor="middle" fill="#333">No emotion</text>
-        <rect x="-32" y="2" width="64" height="10" fill="#f0f0f0" stroke="#ccc" rx="2"/>
-        <text x="0" y="9" font-size="5" text-anchor="middle" fill="#333">Different emotion</text>
-      </g>
-      <rect x="70" y="215" width="60" height="20" fill="white" stroke="black" rx="2" />
-      <text x="100" y="228" font-size="8" text-anchor="middle" fill="black" font-weight="bold">BACK</text>
-      <rect x="140" y="215" width="90" height="20" fill="black" rx="2" />
-      <text x="185" y="228" font-size="8" text-anchor="middle" fill="white" font-weight="bold">NEXT</text>
-    </svg>
-    `;
+    const task2IMG = `<img src="over.png" alt="Task 2 Preview" style="width:100%; height:auto; max-width: 250px; display:block; margin: 0 auto;">`;
 
     mainContent.innerHTML = `
         <div class="card" style="max-width: 900px; padding: 2rem;">
@@ -908,7 +885,7 @@ function renderInstructions(t) {
                 <div style="flex: 1; min-width: 280px; max-width: 400px; text-align: center;">
                     <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; color: #000; line-height: 1.3;">${t2Title}</h3>
                     <div style="display: flex; justify-content: center; margin-bottom: 1rem;">
-                        ${task2SVG}
+                        ${task2IMG}
                     </div>
                     <p style="font-size: 1rem; color: #444;">${t2Sub}</p>
                 </div>
