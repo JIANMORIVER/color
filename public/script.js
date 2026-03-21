@@ -558,7 +558,6 @@ const appTitle = document.getElementById('appTitle');
 let currentHSL = { h: 180, s: 50, l: 50 };
 
 // Phase 2 State
-let colorPickerObjectId = null; // Stores ID from Phase 1 for update
 let wordData = {};
 
 // Custom Toast notification 
@@ -2164,73 +2163,69 @@ function updateGEWVisuals(svg, centerDiv) {
 }
 
 
-async function submitPhase1(t) {
-    const endTime = Date.now();
-    const duration = Math.round((endTime - startTime) / 1000);
-
-    mainContent.innerHTML = `<div class="card" style="text-align:center;"><p>${t.submitting}</p></div>`;
-
-    try {
-        let className = 'SurveyResponse';
-        if (currentGroup && ['CN', 'UK', 'US', 'BW'].includes(currentGroup)) {
-            className = `SurveyResponse_${currentGroup}`;
+async function saveWithRetry(responseObj, maxRetries = 3) {
+    let attempts = 0;
+    while (attempts < maxRetries) {
+        try {
+            return await responseObj.save();
+        } catch (error) {
+            attempts++;
+            if (attempts >= maxRetries) throw error;
+            // 指数退避算法: 等待时间随重试次数递增 (带 Jitter 防止并发聚集)
+            const waitTime = Math.pow(2, attempts - 1) * 1000 + Math.random() * 500;
+            console.warn(`LeanCloud save failed, retrying in ${Math.round(waitTime)}ms... (Attempt ${attempts} of ${maxRetries})`, error);
+            await new Promise(r => setTimeout(r, waitTime));
         }
+    }
+}
 
-        const SurveyResponse = AV.Object.extend(className);
-        const response = new SurveyResponse();
-
-        response.set('user_info', userInfo);
-        response.set('color_data', colorData);
-        response.set('duration', duration);
-        response.set('group', currentGroup);
-        response.set('display_info', displayInfo);
-        // Mark as incomplete initially
-        response.set('completed_phase2', false);
-
-        const saved = await response.save();
-        colorPickerObjectId = saved.id; // Store ID for Phase 2
-
-        // Proceed to Phase 2
+async function submitPhase1(t) {
+    // 【终极极简模式】：阶段一只展示加载动画和跳转，不消耗 LeanCloud 请求，统合到终局提交
+    mainContent.innerHTML = `<div class="card" style="text-align:center;"><p>${t.submitting}</p></div>`;
+    
+    // 让提交界面稍微闪现一下，提升用户过渡体验
+    setTimeout(() => {
         currentStep++;
         renderStep();
-    } catch (e) {
-        console.error(e);
-        showToast(t.errorSubmit + ': ' + (e.message || t.errorNetwork));
-        setTimeout(() => location.reload(), 2500);
-    }
+    }, 400); 
 }
 
 async function submitPhase2(t) {
     mainContent.innerHTML = `<div class="card" style="text-align:center;"><p>${t.submitting}</p></div>`;
 
+    let className = 'SurveyResponse';
+    if (currentGroup && ['CN', 'UK', 'US', 'BW'].includes(currentGroup)) {
+        className = `SurveyResponse_${currentGroup}`;
+    }
+
     try {
-        if (!colorPickerObjectId) {
-            throw new Error("Missing Phase 1 ID");
-        }
+        // 创建全新的答卷数据包
+        const SurveyResponse = AV.Object.extend(className);
+        const response = new SurveyResponse();
+        
+        const endTime = Date.now();
+        const totalDuration = Math.round((endTime - startTime) / 1000);
 
-        let className = 'SurveyResponse';
-        if (currentGroup && ['CN', 'UK', 'US', 'BW'].includes(currentGroup)) {
-            className = `SurveyResponse_${currentGroup}`;
-        }
-
-        // Update existing object
-        const response = AV.Object.createWithoutData(className, colorPickerObjectId);
+        // 将内存中保存的所有（阶段一 + 阶段二）数据完整打包赋给新记录
+        response.set('user_info', userInfo);
+        response.set('color_data', colorData);
+        response.set('duration', totalDuration); 
+        response.set('group', currentGroup);
+        response.set('display_info', displayInfo);
         response.set('word_data', wordData);
-        response.set('completed_phase2', true);
+        response.set('completed_phase2', true); // 证明这是一条做完全部阶段的终极数据
 
-        await response.save();
+        // 使用指数退避的防洪峰重拾机制连试 4 次，确保最稳当交卷
+        await saveWithRetry(response, 4);
 
-        // Finish
-        currentStep++; // Should be renderThankYou
+        // 全部搞定，彻底完成实验
+        currentStep++; 
         renderStep();
     } catch (e) {
-        console.error(e);
-        // Even if update fails, we have Phase 1. Just show Thank You or Error.
-        // Showing Thank You is better UX, maybe log error.
-        showToast(t.errorSubmit + ' (Phase 2): ' + (e.message || t.errorNetwork));
-        // Force thank you access
+        console.error('Final submit error:', e);
+        showToast(t.errorSubmit + ' (Final): ' + (e.message || t.errorNetwork));
         currentStep = 999;
-        renderThankYou(t);
+        renderStep();
     }
 }
 
